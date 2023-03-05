@@ -11,14 +11,16 @@ import photoURL from './assets/img/avatar.png'
 
 import { FaSignOutAlt } from 'react-icons/fa'
 import { MdContactMail } from 'react-icons/md'
+import { collection, doc, getFirestore, query, where } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
 
 firebase.initializeApp({
-  apiKey: "AIzaSyC1Jv-EHjRSlq7jNGMKXO6P3QVyIWrf5Xc",
-  authDomain: "mychat-155c4.firebaseapp.com",
-  projectId: "mychat-155c4",
-  storageBucket: "mychat-155c4.appspot.com",
-  messagingSenderId: "770870955344",
-  appId: "1:770870955344:web:ed4de687a3b5a8f409b055"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 })
 
 const auth = firebase.auth()
@@ -27,6 +29,7 @@ const firestore = firebase.firestore();
 export default function Home() {
 
     const [user] = useAuthState(auth);
+
 
     return(
         <div className='Chat w-[100wh] h-[100vh] p-12'>
@@ -40,13 +43,14 @@ export default function Home() {
                     <h1 className=''>Contatos</h1>
                     </div>
                 </div>
-                <section className='col-span-9 row-span-6 col-start-4 overflow-hidden color4'>
+                <section className='inline-flex col-span-9 row-span-6 col-start-4 overflow-hidden color4'>
                     {user ? <ChatRoom /> : <SignIn />}
                 </section>
             </div>
         </div>
     )
 }
+
 
 function SignIn() {
 
@@ -71,7 +75,21 @@ function SignOut() {
     )
 }
 
+// async function VerifUsername(){
+//     const auth = getAuth();
+//     const uid = auth.currentUser;
+//     const db = getFirestore();
+//     const usersRef = doc(db, "usersDB", uid)
+//     const q = query(usersRef, where("username", "==", false))
+//     console.log(q)
+//     if(q){
+//         alert("sem nome de usuario")
+//     }
+// }
+
 function ChatRoom() {
+
+    // VerifUsername()
 
     const ScrollToEnd = useRef()
 
@@ -102,7 +120,7 @@ function ChatRoom() {
     return(
         <>
         <div className='flex flex-col place-content-end h-full w-full'>
-            <main className='place-content-start h-full overflow-y-auto'>
+            <main className='h-full overflow-y-auto'>
                 { messages && messages.map(msg => <ChatMessage key={msg.id} message={msg}/>) }
 
                 <div ref={ScrollToEnd}></div>
@@ -130,10 +148,11 @@ function ChatMessage(props) {
     const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
 
     return (
-        <div className={`message ${messageClass} flex m-5 rounded-xl color4 brightness-125`}>
+        <div className={`div${messageClass}`}>
+        <div className={`${messageClass} inline-flex m-5 rounded-xl brightness-125`}>
             <img className='h-[40px] rounded-full m-2 w-auto' src={photoURL}/>
             <p className='m-2 font-extralight text-sm'>{text}</p>
-
+        </div>
         </div>
     )
 }

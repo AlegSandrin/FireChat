@@ -9,6 +9,10 @@ html {
   background: #63526e;
 }
 
+* {
+  scrollbar-width: thin;
+}
+
 *::-webkit-scrollbar {
   width: 12px;
 }
@@ -21,6 +25,18 @@ html {
   background-color: #33384e;
   border-radius: 20px;
   border: 3px solid #fcf3e3;
+}
+
+.sent{
+  @apply color5
+}
+
+.received{
+  @apply color4
+}
+
+.divsent{
+  @apply flex flex-row-reverse
 }
 
 .color1 { @apply bg-[#cc2649] };
