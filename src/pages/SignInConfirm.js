@@ -40,8 +40,9 @@ export default function SignInConfirm(){
         const data = docs.data()
         if(data){
            navigate('/')
-        }}}
-
+        }}else{
+            navigate('/')
+        }}
     verifUsersDB()
     },[])
 
