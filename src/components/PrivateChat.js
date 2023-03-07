@@ -2,15 +2,16 @@ import { ChatMessage } from "./Chat";
 
 import { useState, useRef, useEffect } from 'react'
 
-import { auth } from '../services/firebaseService'
+import { db, auth } from '../services/firebaseService'
 import firebase from 'firebase/compat/app'
-
+import 'firebase/compat/firestore'
+import 'firebase/compat/auth'
 
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 
 const firestore = firebase.firestore();
 
-export default function PublicChat(props){
+export default function PrivateChat(props){
     const [data, setData] = useState()
 
     useEffect(() => {
@@ -20,7 +21,7 @@ export default function PublicChat(props){
  
     const ScrollToEnd = useRef()
 
-    const messagesRef = firestore.collection('messages'); 
+    const messagesRef = firestore.collection(); 
     const query = messagesRef.orderBy('createdAt');
 
     const [messages] = useCollectionData(query); // Atualiza as informações conforme o banco de dados

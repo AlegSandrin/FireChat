@@ -1,25 +1,36 @@
 import { useState, useRef, useEffect } from 'react'
 
-
 import firebase from 'firebase/compat/app'
-import 'firebase/compat/firestore'
-import 'firebase/compat/auth'
+
 import { doc, getDoc, getFirestore } from 'firebase/firestore'
 
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
 
 import { FaSignOutAlt } from 'react-icons/fa'
 import { MdContactMail } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
-import PublicChat from './PublicChat'
 
-const auth = firebase.auth()
-const firestore = firebase.firestore();
+import PublicChat from './PublicChat'
+import Loading from './Loading'
+import Sidebar from './Sidebar'
+import { db, auth, provider } from '../services/firebaseService'
+import SignIn from '../pages/SignIn'
 
 export default function Chat() {
 
-    const [user] = useAuthState(auth);
+    const [data, setData] = useState()
+    const [user, loading] = useAuthState(auth)
+    const [userChat, setUserChat] = useState(null)
+
+    useEffect(() => {
+        return data
+    },[data])
+
+    const UserData = (DataUser) => {
+        setData(DataUser)
+    }
+
+    if(loading) return <Loading/>
 
     return(
         <div className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-8 lg:h-full lg:w-full md:h-[90%] md:w-[95%] h-full w-full m-auto overflow-hidden drop-shadow-2xl shadow-inner'>
@@ -27,31 +38,12 @@ export default function Chat() {
                 <SignOut/>
             </header>
             <div className='col-span-3 row-start-2 row-end-7 overflow-y-auto color1'>
-            <div className='flex gap-1 text-xl ml-4 mt-3'>
-                <MdContactMail/>
-                <h1 className=''>Contatos</h1>
-                </div>
+                <Sidebar setUserChat={setUserChat} userChat={userChat} UserData={data}/>
             </div>
             <section className='inline-flex col-span-9 row-span-6 col-start-4 overflow-hidden color4 pt-4'>
-                {user ? <ChatRoom /> : <SignIn />}
+                {user ? <ChatRoom UserData={UserData}/> : <SignIn/>}
             </section>
         </div>
-    )
-}
-
-
-function SignIn() {
-
-    const navigate = useNavigate()
-
-    const SignInWithGoogle = () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider);
-        navigate('/confirm')
-    }
-
-    return (
-        <button onClick={SignInWithGoogle}>Sign in with Google</button>
     )
 }
 
@@ -68,7 +60,7 @@ function SignOut() {
 
 
 
-function ChatRoom() {
+function ChatRoom({UserData}) {
 
     const navigate = useNavigate()
     const [data, setData] = useState()
@@ -82,7 +74,6 @@ function ChatRoom() {
         const user = auth.currentUser;
     
         if(user){
-        const db = getFirestore();
         const usersRef = doc(db, "usersDB", user.uid)
         const docs = await getDoc(usersRef)
         const dataUser = docs.data()
@@ -90,6 +81,7 @@ function ChatRoom() {
         if(dataUser == null || undefined){
             navigate('confirm')
         }
+        UserData(dataUser)
 }}
 
     verifUsersDB()
