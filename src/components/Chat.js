@@ -12,6 +12,7 @@ import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { FaSignOutAlt } from 'react-icons/fa'
 import { MdContactMail } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
+import PublicChat from './PublicChat'
 
 const auth = firebase.auth()
 const firestore = firebase.firestore();
@@ -21,7 +22,7 @@ export default function Chat() {
     const [user] = useAuthState(auth);
 
     return(
-        <div className='text-white rounded-3xl grid grid-cols-12 grid-rows-8 h-full w-full overflow-hidden drop-shadow-2xl shadow-inner'>
+        <div className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-8 lg:h-full lg:w-full md:h-[90%] md:w-[95%] h-full w-full m-auto overflow-hidden drop-shadow-2xl shadow-inner'>
             <header className='row-span-1 col-span-3 p-4 color2 overflow-hidden'>
                 <SignOut/>
             </header>
@@ -94,59 +95,15 @@ function ChatRoom() {
     verifUsersDB()
     },[])
 
-
-    const ScrollToEnd = useRef()
-
-    const messagesRef = firestore.collection('messages'); 
-    const query = messagesRef.orderBy('createdAt');
-
-    const [messages] = useCollectionData(query); // Atualiza as informações conforme o banco de dados
-
-    const [formValue, setFormValue] = useState('')
-
-    const sendMessage = async(e) => {
-        e.preventDefault();
-
-        const { uid, photoURL } = auth.currentUser;
-        await messagesRef.add({
-            text: formValue, // Mensagem
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Quando foi enviada
-            uid, // UID do usuário
-            photoURL,
-            username: data.username
-        })
-
-        setFormValue('') // Reseta o valor do form
-
-        ScrollToEnd.current.scrollIntoView({ behavior: 'smooth'})
-    }
-
     return(
-        <>
-        <div className='flex flex-col place-content-end h-full w-full'>
-            <main className='h-full overflow-y-auto'>
-                { messages && messages.map((msg,index) => <ChatMessage key={index} message={msg}/> )}
-
-                <div ref={ScrollToEnd}></div>
-
-            </main>
-
-            <form className='flex m-4 rounded-xl overflow-hidden' onSubmit={sendMessage}>
-
-                <input
-                className='w-full h-full p-4 text-black outline-0'
-                value={formValue} onChange={(e) => setFormValue(e.target.value)}/>
-
-                <button className='border-l-2 p-2 px-5 float-right color5 border-none' type="submit">Enviar</button>
-
-            </form>
-        </div>
-        </>
+        <PublicChat
+        data={data}
+        />
     )
 
 }
 
-function ChatMessage(props) {
+export function ChatMessage(props) {
 
     const { text, uid, photoURL, createdAt, username } = props.message;
     const ts_ms = new Date(createdAt * 1000); // timestamp para milisegundos
@@ -174,5 +131,5 @@ function ChatMessage(props) {
         </div>
     </div>
     )
+    
 }
-
