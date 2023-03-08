@@ -9,12 +9,12 @@ function App() {
 
   const [user, loading] = useAuthState(auth)
 
-  if (loading) return <Loading/>
+  if (loading) return( <div className="h-full w-full justify-center absolute"><Loading/></div> )
 
   if (!user) return <SignIn/>
 
   return (
-    <div className="App h-full w-full">
+    <div className="h-full w-full">
       <Outlet/>
     </div>
   );

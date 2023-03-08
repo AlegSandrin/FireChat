@@ -12,6 +12,7 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
 
     const [user] = useAuthState(auth)
     const [data, setData] = useState()
+    console.log(UserData)
 
     useEffect(() => {
         if(UserData){
@@ -35,7 +36,7 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
             return alert("Contato já adicionado!")
         }
 
-        db.collection('chats').add({
+        db.collection('privateChat').add({
             users: [UserData.userID, idInput]
         })
     }
@@ -50,10 +51,23 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
         <div className='flex gap-1 text-xl ml-4 mt-3'>
                 <MdContactMail/>
                 <h1 className=''>Contatos</h1>
-                <IoMdAddCircle className="cursor-pointer" />
-                <div setUserChat={setUserChat} userChat={userChat}>
+                <IoMdAddCircle className="cursor-pointer" onClick={handleCreateChat}/>
+                {chatsSnapshot?.docs.map((item, index) => (
+                <div key={index}>
+                <div 
+                setUserChat={setUserChat} 
+                active={userChat?.chatId === item.id ? 'active' : ''}
+                id={item.id}
+                users={item.data().users}
+                user={user}
+                >
 
                 </div>
+                </div>
+                ))
+                    
+                }
+                
         </div>
     )
 }

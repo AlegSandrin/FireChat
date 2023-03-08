@@ -22,15 +22,10 @@ export default function Chat() {
     const [user, loading] = useAuthState(auth)
     const [userChat, setUserChat] = useState(null)
 
-    useEffect(() => {
-        return data
-    },[data])
-
     const UserData = (DataUser) => {
         setData(DataUser)
     }
 
-    if(loading) return <Loading/>
 
     return(
         <div className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-8 lg:h-full lg:w-full md:h-[90%] md:w-[95%] h-full w-full m-auto overflow-hidden drop-shadow-2xl shadow-inner'>
@@ -38,10 +33,10 @@ export default function Chat() {
                 <SignOut/>
             </header>
             <div className='col-span-3 row-start-2 row-end-7 overflow-y-auto color1'>
-                <Sidebar setUserChat={setUserChat} userChat={userChat} UserData={data}/>
+                {data && <Sidebar setUserChat={setUserChat} userChat={userChat} UserData={data}/>}
             </div>
             <section className='inline-flex col-span-9 row-span-6 col-start-4 overflow-hidden color4 pt-4'>
-                {user ? <ChatRoom UserData={UserData}/> : <SignIn/>}
+                {!user ? <Loading/> : <ChatRoom UserData={UserData}/>}
             </section>
         </div>
     )
