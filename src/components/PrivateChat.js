@@ -16,19 +16,9 @@ const firestore = firebase.firestore();
 export default function PrivateChat(props){
 
     const docId = props.userChat.chatId
-    const docs = []
 
     const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
     const [messagesRef] = useCollectionData(q)
-    
-    console.log(messagesRef)
-
-    // const [messagesRef] = useCollection(
-    //     db.collection('privateChat')
-    //       .doc(props.chatId)
-    //       .collection('messages')
-    //       .orderBy('CreatedAt')
-    // )
 
     const refBody = useRef('')
 
@@ -65,8 +55,8 @@ export default function PrivateChat(props){
     }
 
     return(
-        <div className='flex flex-col place-content-end h-full w-full overflow-hidden'>
-            <main className='h-full overflow-y-auto scroll-smooth' ref={refBody}>
+        <div className='flex flex-col place-content-end h-full w-full overflow-hidden '>
+            <main className='h-full overflow-y-auto scroll-smooth pt-3' ref={refBody}>
                 { messagesRef && messagesRef.map((msg, index) => <ChatMessage key={index} message={msg} CurrentUserID={props.userChat.UserData.userID}/> )}
 
 

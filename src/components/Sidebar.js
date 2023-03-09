@@ -1,12 +1,7 @@
-import { getAuth } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection, useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 import { MdContactMail } from "react-icons/md";
-import { IoMdAddCircle } from "react-icons/io";
-import { doc, getDoc, getFirestore, collection} from "firebase/firestore";
-import { useEffect, useState } from "react";
-import firebase from 'firebase/compat/app'
-import { db, auth } from '../services/firebaseService'
+import { IoMdAddCircle, IoIosPeople } from "react-icons/io";
+import { db} from '../services/firebaseService'
 import SidebarChatsItem from "./SidebarChatsItem";
 
 const Sidebar = ({setUserChat, userChat, UserData}) => {
@@ -37,8 +32,13 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
     }
 
     return (
-        <div className='flex-col gap-1 text-xl mt-3'>
+        <div className='flex-col gap-1 text-xl'>
+            <div className={`${userChat ? '' : 'active'} color3 flex justify-center border-opacity-30 border-gray-100 border-b items-center md:gap-2 hover:bg-[#a34373] transition cursor-pointer gap-1 p-3`} onClick={() => {setUserChat(null)}}>
+                <IoIosPeople className="text-[2.5rem]"/>
+                <span className="text-sm lg:text-base xl:text-lg text-ellipsis overflow-hidden">Chat Geral</span>
+            </div>
             <div className="flex justify-between my-5 h-full w-full px-2">
+                
             <div className="flex items-center gap-1">
             <MdContactMail className="text-2xl"/>
             <h1 className=''>Contatos</h1>

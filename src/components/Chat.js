@@ -26,16 +26,16 @@ export default function Chat() {
     }
 
     return(
-        <div className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-8 lg:h-full lg:w-full md:h-[90%] md:w-[95%] h-full w-full m-auto overflow-hidden drop-shadow-2xl shadow-inner'>
-            <header className='row-span-1 col-span-3 p-4 color2 overflow-hidden'>
+        <div className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-6 lg:h-full lg:w-full lg:m-auto md:h-[90%] md:w-[95%] h-[100vh] w-[100vw] overflow-hidden drop-shadow-2xl shadow-inner'>
+            <header className='row-span-1 col-span-3 p-4 color2 overflow-hidden drop-shadow-xl '>
                 <SignOut/>
             </header>
-            <div className='col-span-3 row-start-2 row-end-7 overflow-y-auto color1'>
+            <div className='col-span-3 row-start-2 row-end-7 overflow-y-auto color3 drop-shadow-xl h-full'>
                 {data ? <Sidebar setUserChat={setUserChat} userChat={userChat} UserData={data}/> : <Loading/>}
             </div>
             <section className='inline-flex flex-col col-span-9 row-span-6 col-start-4 overflow-hidden color4'>
-                <ChatHeader userChat={userChat}/>
-                {!user ? <Loading/> : <ChatRoom UserData={UserData} userChat={userChat}/>}
+                {userChat ? <ChatHeader userChat={userChat}/> : <div className='m-2'></div>}
+                {!user ? <Loading/> :  <ChatRoom UserData={UserData} userChat={userChat}/>}
             </section>
         </div>
     )

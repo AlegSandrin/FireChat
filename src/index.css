@@ -44,3 +44,7 @@ html {
 .color3 { @apply bg-[#66324c] };
 .color4 { @apply bg-[#33384e] };
 .color5 { @apply bg-[#003e4f] };
+
+.active{
+  @apply bg-[#8b3c64]
+}
