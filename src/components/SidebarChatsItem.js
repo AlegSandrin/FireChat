@@ -1,0 +1,37 @@
+import { useCollection } from "react-firebase-hooks/firestore"
+import { MdPerson } from "react-icons/md"
+import { db } from "../services/firebaseService"
+
+const getUser = (users, userLogged) => 
+   users?.filter((user) => user !== userLogged)[0]; 
+
+
+export default function SidebarChatsItem({id, users, user, setUserChat, active, UserData}) {
+    const [getUserItem] = useCollection(
+        db.collection('usersDB').where('userID', '==', getUser(users, user))
+    )
+
+    const User = getUserItem?.docs?.[0]?.data()
+
+    
+    const handleNewChat = () => {
+        const userChat = {
+            chatId: id,
+            username: User.username,
+            photoURL: User.photoURL,
+            userID: User.userID,
+            UserData: UserData
+        }
+
+        setUserChat(userChat)
+    }
+
+    
+    return(
+    <div className={`${active} border-t-[1px] border-b-[1px] flex items-center gap-1 p-2`} onClick={handleNewChat}>
+        {User ? <img className="xl:w-[60px] lg:w-[50px] w-[40px] rounded-full" src={User.photoURL} referrerPolicy="no-referrer" /> : <MdPerson/>}
+        <span className="text-sm lg:text-base xl:text-lg text-ellipsis overflow-hidden">{User?.username}</span>
+    </div>
+    )
+
+}

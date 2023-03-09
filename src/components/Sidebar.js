@@ -1,32 +1,21 @@
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
+import { useCollection, useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import { MdContactMail } from "react-icons/md";
 import { IoMdAddCircle } from "react-icons/io";
 import { doc, getDoc, getFirestore, collection} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import firebase from 'firebase/compat/app'
 import { db, auth } from '../services/firebaseService'
+import SidebarChatsItem from "./SidebarChatsItem";
 
 const Sidebar = ({setUserChat, userChat, UserData}) => {
-
-    const [user] = useAuthState(auth)
-    const [data, setData] = useState()
-    console.log(UserData)
-
-    useEffect(() => {
-        if(UserData){
-            setData(UserData)
-        }
-        
-    },[UserData])
-
 
     const refChat = db
     .collection('privateChat')
     .where('users', 'array-contains', UserData.userID)
     const [chatsSnapshot] = useCollection(refChat)
-
+    
     const handleCreateChat = () => {
         const idInput = prompt("Escreva o ID do usuário")
 
@@ -48,21 +37,26 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
     }
 
     return (
-        <div className='flex gap-1 text-xl ml-4 mt-3'>
-                <MdContactMail/>
-                <h1 className=''>Contatos</h1>
+        <div className='flex-col gap-1 text-xl mt-3'>
+            <div className="flex justify-between my-5 h-full w-full px-2">
+            <div className="flex items-center gap-1">
+            <MdContactMail className="text-2xl"/>
+            <h1 className=''>Contatos</h1>
+            </div>
+                <div className="flex items-center text-3xl">
                 <IoMdAddCircle className="cursor-pointer" onClick={handleCreateChat}/>
+                </div>
+            </div>
                 {chatsSnapshot?.docs.map((item, index) => (
-                <div key={index}>
-                <div 
+                <div className="h-full w-full" key={index}>
+                <SidebarChatsItem
                 setUserChat={setUserChat} 
                 active={userChat?.chatId === item.id ? 'active' : ''}
                 id={item.id}
                 users={item.data().users}
-                user={user}
-                >
-
-                </div>
+                user={UserData.userID}
+                UserData={UserData}
+                />
                 </div>
                 ))
                     

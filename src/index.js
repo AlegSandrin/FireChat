@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SignInConfirm from './pages/SignInConfirm';
-import Home from './pages/Home';
+import Home, { homeLoader } from './pages/Home';
 
 const router = createBrowserRouter([
     {
@@ -14,6 +14,7 @@ const router = createBrowserRouter([
      children: [
         {
             path: "/",
+            // loader:homeLoader,
             element: <Home/>
         },
         {

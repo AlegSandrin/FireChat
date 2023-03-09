@@ -7,51 +7,68 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
 import 'firebase/compat/auth'
 
-import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { useCollection, useCollectionData } from 'react-firebase-hooks/firestore'
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getDocs, query, QuerySnapshot } from "firebase/firestore";
 
 const firestore = firebase.firestore();
 
 export default function PrivateChat(props){
-    const [data, setData] = useState()
+
+    const docId = props.userChat.chatId
+    const docs = []
+
+    const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
+    const [messagesRef] = useCollectionData(q)
+    
+    console.log(messagesRef)
+
+    // const [messagesRef] = useCollection(
+    //     db.collection('privateChat')
+    //       .doc(props.chatId)
+    //       .collection('messages')
+    //       .orderBy('CreatedAt')
+    // )
+
+    const refBody = useRef('')
 
     useEffect(() => {
-     setData(props.data)
-    },[props])
-    
- 
-    const ScrollToEnd = useRef()
+        if (refBody.current.scrollHeight > refBody.current.offsetHeight){
+            refBody.current.scrollTop =
+            refBody.current.scrollHeight - refBody.current.offsetHeight
+        }
+    },[messagesRef])
 
-    const messagesRef = firestore.collection(); 
-    const query = messagesRef.orderBy('createdAt');
 
-    const [messages] = useCollectionData(query); // Atualiza as informações conforme o banco de dados
 
     const [formValue, setFormValue] = useState('')
 
     const sendMessage = async(e) => {
         e.preventDefault();
 
-        const { uid, photoURL } = auth.currentUser;
-        const username = data.username;
-        await messagesRef.add({
-            text: formValue, // Mensagem
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Quando foi enviada
-            uid, // UID do usuário
-            photoURL,
+        const photoURL = props.userChat.UserData.photoURL
+        const userID = props.userChat.UserData.userID
+        const username = props.userChat.UserData.username
+
+
+        firestore.collection('privateChat').doc(docId).collection('messages').add
+        ({
+            text: formValue, 
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            userID: userID,
+            photoURL: photoURL,
             username: username
-        })
+        }) 
+        
+        setFormValue('') 
 
-        setFormValue('') // Reseta o valor do form
-
-        ScrollToEnd.current.scrollIntoView({ behavior: 'smooth'})
     }
 
     return(
-        <div className='flex flex-col place-content-end h-full w-full'>
-            <main className='h-full overflow-y-auto'>
-                { messages && messages.map((msg,index) => <ChatMessage key={index} message={msg}/> )}
+        <div className='flex flex-col place-content-end h-full w-full overflow-hidden'>
+            <main className='h-full overflow-y-auto scroll-smooth' ref={refBody}>
+                { messagesRef && messagesRef.map((msg, index) => <ChatMessage key={index} message={msg} CurrentUserID={props.userChat.UserData.userID}/> )}
 
-                <div ref={ScrollToEnd}></div>
 
             </main>
 

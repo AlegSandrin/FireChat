@@ -58,8 +58,15 @@ export default function SignInConfirm(){
                 alert("ID de Usuário já em uso!")
             }
             else{
-                await setDoc(doc(db, 'usersDB', user.uid), {username: username, userID: userID})
-                await navigate('/')
+                await setDoc(doc(db, 'usersDB', user.uid), 
+                {username: username,
+                 userID: userID,
+                 email: user.email,
+                 photoURL: user.photoURL
+                 }).then(() => {
+                    navigate('/')
+                 })
+                
             }
 
     }
