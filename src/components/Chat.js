@@ -24,13 +24,8 @@ export default function Chat() {
         setData(DataUser)
     }
 
-    function mobile(){
-        const deviceWidth = window.innerWidth
-        if(deviceWidth < 768){ return true } else { return false }
-    }
-
     return(
-        <div  className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-6 lg:h-full lg:w-full lg:m-auto md:h-[90%] md:w-[95%] h-full w-full overflow-hidden drop-shadow-2xl shadow-inner'>
+        <div className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-6 w-full h-full overflow-hidden drop-shadow-2xl shadow-inner'>
             <div className={`fixed md:block z-20 ${sidebar ? 'sidebarOut left-[-100%]' : 'sidebar left-[0]'} md:relative col-span-3 row-span-full h-full w-3/5 md:w-auto`}>
             <div className={`md:hidden fixed z-20 left-[0] text-[2.5rem] p-2`}>
                     {sidebar ? <FaBars onClick={showSidebar}/> : <FaTimes onClick={showSidebar}/>}
@@ -42,7 +37,7 @@ export default function Chat() {
                     {data ? <Sidebar setUserChat={setUserChat} userChat={userChat} UserData={data}/> : <Loading/>}
                 </div>
             </div>
-            <section onClick={() => !sidebar && setSidebar(true)} className='inline-flex flex-col col-span-full md:col-span-9 row-span-6  color4'>
+            <section onClick={() => !sidebar && setSidebar(true)} className='inline-flex overflow-hidden flex-col col-span-full md:col-span-9 row-span-6 color4'>
                 <ChatHeader userChat={userChat}/>
                 {!user ? <Loading/> :  <ChatRoom UserData={UserData} userChat={userChat}/>}
             </section>

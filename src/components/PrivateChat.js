@@ -29,13 +29,12 @@ export default function PrivateChat(props){
         }
     },[messagesRef])
 
-
-
     const [formValue, setFormValue] = useState('')
 
     const sendMessage = async(e) => {
-        e.preventDefault();
+       e.preventDefault(); 
 
+        if(formValue.length > 0){
         const photoURL = props.userChat.UserData.photoURL
         const userID = props.userChat.UserData.userID
         const username = props.userChat.UserData.username
@@ -51,7 +50,18 @@ export default function PrivateChat(props){
         }) 
         
         setFormValue('') 
+    }
+    }
 
+    const keyDownHandler = (event) => {
+        if ( event.shiftKey && event.key === 'Enter'){
+        }
+        else{
+        if (event.key === 'Enter') {
+          sendMessage(event)
+        }
+        
+        }
     }
 
     return(
@@ -63,7 +73,10 @@ export default function PrivateChat(props){
             </main>
 
             <form className='flex m-4 rounded-xl overflow-hidden' onSubmit={sendMessage}>
-                <textarea  
+                <textarea
+                id="msgarea"
+                onKeyUp={keyDownHandler}
+                onKeyDown={keyDownHandler}
                 className='resize-none pl-2 pt-3 w-full h-full text-black outline-0'
                 value={formValue} onChange={(e) => setFormValue(e.target.value)}/>
                 <button className='border-l-2 p-2 px-5 float-right color5 border-none' type="submit">Enviar</button>
