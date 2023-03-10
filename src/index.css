@@ -39,6 +39,36 @@ html {
   @apply flex flex-row-reverse
 }
 
+.sidebar{
+  @apply animate-[showSidebar_.4s] md:animate-none md:left-0;
+}
+
+@keyframes showSidebar{
+  from {
+    opacity: 0;
+    left: -100%;
+  }
+  to {
+    opacity: 1;
+    left: 0;
+  }
+}
+
+.sidebarOut{
+  @apply animate-[hiddenSidebar_.4s] md:animate-none md:left-0;
+}
+
+@keyframes hiddenSidebar{
+  from {
+    opacity: 1;
+    left: 0;
+  }
+  to {
+    opacity: 0;
+    left: -100%;
+  }
+}
+
 .color1 { @apply bg-[#cc2649] };
 .color2 { @apply bg-[#992c4b] };
 .color3 { @apply bg-[#66324c] };

@@ -14,7 +14,7 @@ function App() {
   if (!user) return <SignIn/>
 
   return (
-    <div className="h-[100vh] w-[100vw] overflow-hidden">
+    <div className="flex justify-center h-[100vh] w-[100vw] overflow-hidden">
       <Outlet/>
     </div>
   );

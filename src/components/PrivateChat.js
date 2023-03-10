@@ -63,13 +63,10 @@ export default function PrivateChat(props){
             </main>
 
             <form className='flex m-4 rounded-xl overflow-hidden' onSubmit={sendMessage}>
-
-                <input
-                className='w-full h-full p-4 text-black outline-0'
+                <textarea  
+                className='resize-none pl-2 pt-3 w-full h-full text-black outline-0'
                 value={formValue} onChange={(e) => setFormValue(e.target.value)}/>
-
                 <button className='border-l-2 p-2 px-5 float-right color5 border-none' type="submit">Enviar</button>
-
             </form>
         </div>
     )

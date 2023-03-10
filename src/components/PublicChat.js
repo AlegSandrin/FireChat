@@ -16,7 +16,6 @@ export default function PublicChat(props){
     useEffect(() => {
      setData(props.data)
     },[props])
-    
  
     const ScrollToEnd = useRef()
 
@@ -32,12 +31,14 @@ export default function PublicChat(props){
 
         const { uid, photoURL } = auth.currentUser;
         const username = data.username;
+        const userID = data.userID
         await messagesRef.add({
             text: formValue, // Mensagem
             createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Quando foi enviada
             uid, // UID do usuário
             photoURL,
-            username: username
+            username: username,
+            userID: userID
         })
 
         setFormValue('') // Reseta o valor do form
@@ -55,11 +56,9 @@ export default function PublicChat(props){
             </main>
 
             <form className='flex m-4 rounded-xl overflow-hidden' onSubmit={sendMessage}>
-
-                <input
-                className='w-full h-full p-4 text-black outline-0'
+                <textarea  
+                className='resize-none pl-2 pt-3 w-full h-full text-black outline-0'
                 value={formValue} onChange={(e) => setFormValue(e.target.value)}/>
-
                 <button className='border-l-2 p-2 px-5 float-right color5 border-none' type="submit">Enviar</button>
 
             </form>
