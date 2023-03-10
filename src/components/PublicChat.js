@@ -66,7 +66,7 @@ export default function PublicChat(props){
 
     return(
         <div className='flex flex-col place-content-end h-full w-full overflow-hidden'>
-            <main className='h-full overflow-y-auto scroll-smooth pt-3' ref={refBody}>
+            <main className='h-full overflow-auto overflow-x-hidden scroll-smooth pt-3' ref={refBody}>
                 { messages && messages.map((msg,index) => <ChatMessage key={index} message={msg}/> )}
 
             </main>

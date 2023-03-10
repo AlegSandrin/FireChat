@@ -25,7 +25,8 @@ export default function Chat() {
     }
 
     return(
-        <div className='text-white md:rounded-3xl grid grid-cols-12 grid-rows-6 w-full h-full overflow-hidden drop-shadow-2xl shadow-inner'>
+    <div className='flex h-[100vh] w-full md:p-8'>
+        <div className='grid text-white md:rounded-3xl grid-cols-12 grid-rows-6 drop-shadow-2xl shadow-inner overflow-hidden w-full h-full'>
             <div className={`fixed md:block z-20 ${sidebar ? 'sidebarOut left-[-100%]' : 'sidebar left-[0]'} md:relative col-span-3 row-span-full h-full w-3/5 md:w-auto`}>
             <div className={`md:hidden fixed z-20 left-[0] text-[2.5rem] p-2`}>
                     {sidebar ? <FaBars onClick={showSidebar}/> : <FaTimes onClick={showSidebar}/>}
@@ -42,6 +43,7 @@ export default function Chat() {
                 {!user ? <Loading/> :  <ChatRoom UserData={UserData} userChat={userChat}/>}
             </section>
         </div>
+    </div>
     )
 }
 
