@@ -24,8 +24,11 @@ export default function Chat() {
         setData(DataUser)
     }
 
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+
     return(
-    <div className='flex h-screen min-h-screen w-screen min-w-screen md:p-8'>
+    <div className='container flex md:p-8'>
         <div className='grid text-white md:rounded-3xl grid-cols-12 grid-rows-6 drop-shadow-2xl shadow-inner overflow-hidden w-full h-full'>
             <div className={`fixed md:block z-20 ${sidebar ? 'sidebarOut left-[-100%]' : 'sidebar left-[0]'} md:relative col-span-3 row-span-full h-full w-3/5 md:w-auto`}>
             <div className={`md:hidden fixed z-20 left-[0] text-[2.5rem] p-2`}>
