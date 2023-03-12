@@ -3,6 +3,7 @@ import { MdContactMail } from "react-icons/md";
 import { IoMdAddCircle, IoIosPeople } from "react-icons/io";
 import { db} from '../services/firebaseService'
 import SidebarChatsItem from "./SidebarChatsItem";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Sidebar = ({setUserChat, userChat, UserData}) => {
 
@@ -11,8 +12,12 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
     .where('users', 'array-contains', UserData.userID)
     const [chatsSnapshot] = useCollection(refChat)
     
+    const refUsersDB = collection(db, 'usersDB')
+
     const handleCreateChat = () => {
         const idInput = prompt("Escreva o ID do usuário")
+
+        // console.log(useridExists(idInput))
 
         if(idInput === UserData.userID){
             return alert("Insira um ID de usuário diferente do seu!")
@@ -29,6 +34,11 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
         return !!chatsSnapshot?.docs.find(
             (chat) => chat.data().users.find((user) => user === chatID)?.length > 0
         )
+    }
+
+    const useridExists = (idInput) => {
+        const q = query(refUsersDB, where('userID', '==', idInput))
+        return q
     }
 
     return (
