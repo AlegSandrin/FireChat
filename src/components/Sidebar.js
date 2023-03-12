@@ -14,31 +14,32 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
     
     const refUsersDB = collection(db, 'usersDB')
 
-    const handleCreateChat = () => {
+    const handleCreateChat = async () => {
         const idInput = prompt("Escreva o ID do usuário")
 
-        // console.log(useridExists(idInput))
-
         if(idInput === UserData.userID){
-            return alert("Insira um ID de usuário diferente do seu!")
+            return alert("Insira um ID de usuário diferente do seu")
         } else if(chatExists(idInput)){
-            return alert("Contato já adicionado!")
-        }
-
-        db.collection('privateChat').add({
-            users: [UserData.userID, idInput]
+            return alert("Contato já adicionado")
+        } else {
+        const q = query(refUsersDB, where('userID', '==', idInput))
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            if(doc.exists()){
+                db.collection('privateChat').add({
+                users: [UserData.userID, idInput] })
+            } else {
+                return alert('ID de usuário não existente')
+                
+            }
         })
     }
+}
 
     const chatExists = (chatID) => {
         return !!chatsSnapshot?.docs.find(
             (chat) => chat.data().users.find((user) => user === chatID)?.length > 0
         )
-    }
-
-    const useridExists = (idInput) => {
-        const q = query(refUsersDB, where('userID', '==', idInput))
-        return q
     }
 
     return (
