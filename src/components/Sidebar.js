@@ -4,9 +4,15 @@ import { IoMdAddCircle, IoIosPeople } from "react-icons/io";
 import { db} from '../services/firebaseService'
 import SidebarChatsItem from "./SidebarChatsItem";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, useColorScheme } from "@mui/material";
+import { useState } from "react";
+import { alignProperty } from "@mui/material/styles/cssUtils";
+import { Box, color } from "@mui/system";
 
-const Sidebar = ({setUserChat, userChat, UserData}) => {
 
+const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
+
+    const [idInput, setIdInput] = useState('')
     const refChat = db
     .collection('privateChat')
     .where('users', 'array-contains', UserData.userID)
@@ -15,24 +21,49 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
     const refUsersDB = collection(db, 'usersDB')
 
     const handleCreateChat = async () => {
-        const idInput = prompt("Escreva o ID do usuário")
 
         if(idInput === UserData.userID){
-            return alert("Insira um ID de usuário diferente do seu")
+            const alert = {
+                severity:"warning",
+                setOpen:true, 
+                title: 'Aviso',
+                message:'Insira um ID de usuário diferente do seu'
+            }
+            setShowAlert(alert)
         } else if(chatExists(idInput)){
-            return alert("Contato já adicionado")
+            const alert = {
+                severity:"warning",
+                setOpen:true, 
+                title: 'Aviso',
+                message:'Contato já adicionado'
+            }
+            setShowAlert(alert)
         } else {
+
         const q = query(refUsersDB, where('userID', '==', idInput))
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            if(doc.exists()){
-                db.collection('privateChat').add({
-                users: [UserData.userID, idInput] })
-            } else {
-                return alert('ID de usuário não existente')
-                
+        
+        if(querySnapshot.empty){
+            const alert = {
+                severity:"warning",
+                setOpen:true, 
+                title: 'Aviso',
+                message:'ID de usuário não existente'
             }
-        })
+            setShowAlert(alert)
+        }
+        else{
+            db.collection('privateChat').add({
+            users: [UserData.userID, idInput] })
+            const alert = {
+                severity:"success",
+                setOpen:true, 
+                title: 'Sucesso',
+                message:'Contato adicionado'
+            }
+            setShowAlert(alert)
+            handleClose()
+        }
     }
 }
 
@@ -42,8 +73,42 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
         )
     }
 
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+    setOpen(true);
+    };
+
+    const handleClose = () => {
+    setOpen(false);
+    };
+
     return (
         <div className='flex-col gap-1 text-xl'>
+            
+            <Dialog fullWidth open={open} onClose={handleClose} >
+                <DialogTitle sx={{fontSize:30}}>Adicionar Contato</DialogTitle>
+                <DialogContent>
+                    <DialogContentText sx={{fontSize:23}}>
+                        Digite o <strong>ID do úsuario</strong>:
+                    </DialogContentText>
+                    <TextField
+                    autoFocus
+                    fullWidth
+                    margin="dense"
+                    id="userID"
+                    label='UserID'
+                    variant='standard'
+                    value={idInput}
+                    onChange={(e) => {setIdInput(e.target.value)}}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancelar</Button>
+                    <Button onClick={handleCreateChat}>Adicionar</Button>
+                </DialogActions>
+            </Dialog>
+
             <div className={`${userChat ? '' : 'active'} color3 flex justify-center border-opacity-30 border-gray-100 border-b items-center md:gap-2 hover:bg-[#a34373] transition cursor-pointer gap-1 p-3`} onClick={() => {setUserChat(null)}}>
                 <IoIosPeople className="text-[2.5rem]"/>
                 <span className="text-sm lg:text-base xl:text-lg text-ellipsis overflow-hidden">Chat Geral</span>
@@ -52,10 +117,10 @@ const Sidebar = ({setUserChat, userChat, UserData}) => {
                 
             <div className="flex items-center gap-1">
             <MdContactMail className="text-2xl"/>
-            <h1 className=''>Contatos</h1>
+            <h1>Contatos</h1>
             </div>
                 <div className="flex items-center text-3xl">
-                <IoMdAddCircle className="cursor-pointer" onClick={handleCreateChat}/>
+                <IoMdAddCircle className="cursor-pointer" onClick={handleClickOpen}/>
                 </div>
             </div>
                 {chatsSnapshot?.docs.map((item, index) => (

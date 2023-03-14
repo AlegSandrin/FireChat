@@ -3,20 +3,21 @@ import { useState, useEffect } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
 
 import { useAuthState } from 'react-firebase-hooks/auth'
-import {auth } from '../services/firebaseService'
+import { auth } from '../services/firebaseService'
 
 import Loading from './Loading'
 import Sidebar from './Sidebar'
 import ChatHeader from './ChatHeader'
 import SignOut from './SignOut'
 import { ChatRoom } from './ChatRoom'
+import ShowAlert from './ShowAlert'
 
 export default function Chat() {
 
     const [data, setData] = useState()
     const [user] = useAuthState(auth)
     const [userChat, setUserChat] = useState(null)
-
+    const [showAlert, setShowAlert] = useState()
     const [sidebar, setSidebar] = useState(false)
     const showSidebar = () => setSidebar(!sidebar)
 
@@ -28,8 +29,9 @@ export default function Chat() {
     document.documentElement.style.setProperty('--vh', `${vh}px`);
 
     return(
-    <div className='container'>
-        <div className='grid text-white grid-cols-12 grid-rows-6 drop-shadow-2xl shadow-inner overflow-hidden w-screen h-screen'>
+    <div className='container max-w-full'>
+        {showAlert?.setOpen === true && <ShowAlert showAlert={showAlert}/>}
+        <div className='grid text-white grid-cols-12 grid-rows-6 drop-shadow-2xl shadow-inner overflow-hidden w-full h-full'>
             <div className={`fixed md:block z-20 ${sidebar ? 'sidebarOut left-[-100%]' : 'sidebar left-[0]'} md:relative col-span-3 row-span-full h-full w-3/5 md:w-auto`}>
             <div className={`md:hidden fixed z-20 left-[0] text-[2.5rem] p-2`}>
                     {sidebar ? <FaBars onClick={showSidebar}/> : <FaTimes onClick={showSidebar}/>}
@@ -38,7 +40,7 @@ export default function Chat() {
                     <SignOut/>
                 </header>
                 <div className='col-span-3 row-start-2 row-end-6 overflow-y-auto color3 drop-shadow-xl h-full'>
-                    {data ? <Sidebar setUserChat={setUserChat} userChat={userChat} UserData={data}/> : <Loading/>}
+                    {data ? <Sidebar setShowAlert={setShowAlert} setUserChat={setUserChat} userChat={userChat} UserData={data}/> : <Loading/>}
                 </div>
             </div>
             <section onClick={() => !sidebar && setSidebar(true)} className='inline-flex overflow-hidden flex-col col-span-full md:col-span-9 row-span-6 color4'>
