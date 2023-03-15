@@ -1,15 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 import { auth, provider } from "../services/firebaseService";
 
 export default function SignIn(){
 
-        const navigate = useNavigate()
-    
         const SignInWithGoogle = () => {
-            auth.signInWithPopup(provider).then(() => {
-              navigate('/confirm')  
-            });
-            
+            auth.signInWithPopup(provider)
         }
     
         return (

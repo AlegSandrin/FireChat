@@ -1,12 +1,28 @@
 import { useState,useEffect } from "react";
 
 import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { auth } from "../services/firebaseService";
 import { useNavigate } from "react-router-dom";
+import SignIn from "./SignIn";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-const auth = getAuth()
 
-export default function SignInConfirm(){
+export default function SignInConfirm({SignInConfirm}){
+
+    const [user] = useAuthState(auth)
+
+    const navigate = useNavigate()
+
+    useEffect(() =>{
+        if(!SignInConfirm){
+           if(user){
+            navigate('/')
+           }
+           else{
+            <SignIn/>
+           } 
+        }
+    })
 
     const [username, setUsername] = useState('')
     const [userID, setUserID] = useState('')
@@ -21,30 +37,6 @@ export default function SignInConfirm(){
             setIsDisabled(false)
         }
     },[username, userID])
-
-    const navigate = useNavigate()
-    
-
-    useEffect(() => {
-        const verifUsersDB = async () => {
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        await sleep(1000)
-        const user = auth.currentUser;
-    
-        if(user){
-        const db = getFirestore();
-        const usersRef = doc(db, "usersDB", user.uid)
-        const docs = await getDoc(usersRef)
-        const data = docs.data()
-        if(data){
-           navigate('/')
-        }}else{
-            navigate('/')
-        }}
-    verifUsersDB()
-    },[])
 
     const SubmitUser = async (e) =>{
             e.preventDefault();

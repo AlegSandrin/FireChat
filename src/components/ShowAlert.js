@@ -20,12 +20,10 @@ export default function ShowAlert ({showAlert}) {
     }
 
     return(
-    <div className={`${open ? 'block' : 'hidden'}`}>
         <Stack spacing={2} sx={{width: '100%'}}>
         <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} TransitionComponent={SlideTransition}>
-        <Alert severity={showAlert.severity} onClose={handleClose}> <AlertTitle>{showAlert.title}</AlertTitle> {showAlert.message} </Alert>
+        <Alert  severity={showAlert.severity} onClose={handleClose}> <AlertTitle>{showAlert.title}</AlertTitle> {showAlert.message} </Alert>
         </Snackbar>
         </Stack>
-    </div>
     )
 }
