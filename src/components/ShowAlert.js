@@ -20,7 +20,7 @@ export default function ShowAlert ({showAlert}) {
     }
 
     return(
-        <Stack spacing={2} sx={{width: '100%'}}>
+        <Stack spacing={2} sx={{width: '100%', display:`${open ? 'block' : 'none'}`}}>
         <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} TransitionComponent={SlideTransition}>
         <Alert  severity={showAlert.severity} onClose={handleClose}> <AlertTitle>{showAlert.title}</AlertTitle> {showAlert.message} </Alert>
         </Snackbar>

@@ -6,8 +6,6 @@ import SidebarChatsItem from "./SidebarChatsItem";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, useColorScheme } from "@mui/material";
 import { useState } from "react";
-import { alignProperty } from "@mui/material/styles/cssUtils";
-import { Box, color } from "@mui/system";
 
 
 const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
@@ -87,25 +85,25 @@ const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
         <div className='flex-col gap-1 text-xl'>
             
             <Dialog fullWidth open={open} onClose={handleClose} >
-                <DialogTitle sx={{fontSize:30}}>Adicionar Contato</DialogTitle>
-                <DialogContent>
-                    <DialogContentText sx={{fontSize:23}}>
+                <DialogTitle color='secondary' borderBottom={3} sx={{fontSize:25, backgroundColor:'secundary'}}>Adicionar Contato</DialogTitle>
+                <DialogContent sx={{margin:5}}>
+                    <DialogContentText sx={{fontSize:18}}>
                         Digite o <strong>ID do úsuario</strong>:
                     </DialogContentText>
                     <TextField
+                    variant='outlined'
                     autoFocus
                     fullWidth
                     margin="dense"
                     id="userID"
                     label='UserID'
-                    variant='standard'
                     value={idInput}
                     onChange={(e) => {setIdInput(e.target.value)}}
                     />
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{padding:2}}>
                     <Button onClick={handleClose}>Cancelar</Button>
-                    <Button onClick={handleCreateChat}>Adicionar</Button>
+                    <Button variant='contained' onClick={handleCreateChat}>Adicionar</Button>
                 </DialogActions>
             </Dialog>
 
@@ -135,9 +133,7 @@ const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
                 />
                 </div>
                 ))
-                    
-                }
-                
+                }         
         </div>
     )
 }

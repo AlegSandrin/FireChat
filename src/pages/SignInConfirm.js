@@ -56,7 +56,7 @@ export default function SignInConfirm({SignInConfirm}){
                  email: user.email,
                  photoURL: user.photoURL
                  }).then(() => {
-                    navigate('/')
+                    document.location.reload()
                  })
                 
             }
@@ -65,7 +65,7 @@ export default function SignInConfirm({SignInConfirm}){
 
     return(
         
-<div className="flex h-[100vh] w-[100vw] place-items-center">
+<div className="SigInConfirm flex h-[100vh] w-[100vw] place-items-center">
     <div className='text-white rounded-3xl overflow-hidden drop-shadow-2xl shadow-inner m-auto md:h-[600px] md:w-[600px] h-[85%] w-[95%]'>
         <header className='color1 p-3'>
             <span className="flex md:text-3xl text-2xl font-medium justify-center">Finalizando Cadastro</span>

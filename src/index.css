@@ -6,13 +6,18 @@
 
 html {
   font-family: 'Martian Mono', monospace;
-  background: #63526e;
 }
 
 .container{
+  background: linear-gradient(to top, #353a52f1, #2e3349f3), url("../src/assets/img/background4.png");
   height: 100vh; /* Use vh as a fallback for browsers that do not support Custom Properties */
   height: calc(var(--vh, 1vh) * 100);
   margin: 0 auto;
+}
+
+
+.SignIn, .SigInConfirm, .Loading{
+  background: linear-gradient(to bottom right, #685773fc, #594a63f4, #54475efc), url("../src/assets/img/background4.png");
 }
 
 * {
@@ -75,11 +80,11 @@ html {
   }
 }
 
-.color1 { @apply bg-[#cc2649] };
-.color2 { @apply bg-[#992c4b] };
-.color3 { @apply bg-[#66324c] };
-.color4 { @apply bg-[#33384e] };
-.color5 { @apply bg-[#003e4f] };
+.color1 { @apply bg-[#cc264acf] };
+.color2 { @apply bg-[#992c4bc6] };
+.color3 { @apply bg-[#66324cc0] };
+.color4 { @apply bg-[#33384ec5] };
+.color5 { @apply bg-[#003e4fcc] };
 
 .active{
   @apply bg-[#8b3c64]

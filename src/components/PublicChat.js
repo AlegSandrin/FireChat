@@ -6,15 +6,12 @@ import { auth } from '../services/firebaseService'
 import firebase from 'firebase/compat/app'
 
 import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { TextField } from "@mui/material";
+import { IoSend } from "react-icons/io5";
 
 const firestore = firebase.firestore();
 
-export default function PublicChat(props){
-    const [data, setData] = useState()
-
-    useEffect(() => {
-     setData(props.data)
-    },[props])
+export default function PublicChat({userData, setShowAlert}){
 
     const messagesRef = firestore.collection('messages'); 
     const query = messagesRef.orderBy('createdAt');
@@ -38,8 +35,8 @@ export default function PublicChat(props){
         if(formValue.length > 0){
 
         const { uid, photoURL } = auth.currentUser;
-        const username = data.username;
-        const userID = data.userID
+        const username = userData.username;
+        const userID = userData.userID
         await messagesRef.add({
             text: formValue, // Mensagem
             createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Quando foi enviada
@@ -50,19 +47,32 @@ export default function PublicChat(props){
         })
 
         setFormValue('') // Reseta o valor do form
-}
     }
+}
 
-    const keyDownHandler = (event) => {
-        if ( event.shiftKey && event.key === 'Enter'){
+const [isDisabled, setIsDisabled] = useState(true)
+
+    useEffect(() => {
+        if(formValue.length == 0){
+            setIsDisabled(true)
         }
         else{
-        if (event.key === 'Enter') {
-          sendMessage(event)
-        }
-        
-        }
-    }
+            setIsDisabled(false)
+            if(formValue.length > 1000){
+                const alert = {
+                    severity:"warning",
+                    setOpen:true, 
+                    title: 'Mensagem muito longa',
+                    message:'Número máximo de 1000 caracteres excedido'
+                }
+                setShowAlert(alert)
+                setIsDisabled(true)
+            }
+            else{
+                setIsDisabled(false)
+            }
+        }   
+    },[formValue])
 
     return(
         <div className='flex flex-col place-content-end h-full w-full overflow-hidden'>
@@ -71,15 +81,18 @@ export default function PublicChat(props){
 
             </main>
 
-            <form className='flex m-4 rounded-xl overflow-hidden' onSubmit={sendMessage} id='form'>
-                <textarea
-                id="msgarea"
-                onKeyUp={keyDownHandler}
-                onKeyDown={keyDownHandler}
-                className='resize-none pl-2 pt-3 w-full h-full text-black outline-0'
-                value={formValue} onChange={(e) => setFormValue(e.target.value)}/>
-                <button className='border-l-2 p-2 px-5 float-right color5 border-none' type="submit">Enviar</button>
-
+            <form className='flex m-2 p-2 px-4 pt-0 drop-shadow-xl shadow-inner rounded-[2rem] overflow-hidden opacity-80 bg-[rgba(32,36,53,0.85)]' onSubmit={sendMessage}>
+                <TextField
+                variant='standard'
+                className='w-full h-full'
+                value={formValue} onChange={(e) => setFormValue(e.target.value)}
+                InputProps={{
+                endAdornment: (
+                    <button disabled={isDisabled} className={`${isDisabled && 'saturate-0'} transition rounded-full text-[2rem] p-3 m-1 float-right color5`} type="submit"><IoSend/></button>
+                )
+                }}
+                />
+                
             </form>
         </div>
     )

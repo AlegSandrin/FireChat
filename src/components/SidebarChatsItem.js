@@ -12,7 +12,6 @@ export default function SidebarChatsItem({id, users, user, setUserChat, active, 
     )
 
     const User = getUserItem?.docs?.[0]?.data()
-
     
     const handleNewChat = () => {
         const userChat = {
@@ -25,7 +24,6 @@ export default function SidebarChatsItem({id, users, user, setUserChat, active, 
 
         setUserChat(userChat)
     }
-
     
     return(
     <div className={`${active} border-t-[1px] border-b-[1px] border-opacity-30 border-gray-100 color3 flex items-center md:gap-2 hover:bg-[#a34373] transition cursor-pointer gap-1 p-2`} onClick={handleNewChat}>
