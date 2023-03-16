@@ -15,7 +15,7 @@ export default function SignIn(){
     <div className='text-white rounded-3xl overflow-hidden drop-shadow-2xl shadow-inner md:h-auto md:w-[600px] h-auto w-[95%]'>
         <div className='flex flex-col items-center bg-[#33384e] bg-opacity-75 md:px-20 px-5 pb-14 rounded-b-3xl'>
 
-        <img src={logo} className='h-auto w-[75%] mx-auto brightness-110 translate-y-10 saturate-150'></img>
+        <img src={logo} alt="FireChat Logo" className='h-auto w-[75%] mx-auto brightness-110 translate-y-10 saturate-150'></img>
 
         <label className="md:text-3xl text-xl mb-2">Seja bem-vindo ao</label>
         <label className="md:text-5xl text-3xl">FireChat</label>
