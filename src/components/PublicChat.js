@@ -53,7 +53,7 @@ export default function PublicChat({userData, setShowAlert}){
 const [isDisabled, setIsDisabled] = useState(true)
 
     useEffect(() => {
-        if(formValue.length == 0){
+        if(formValue.length === 0){
             setIsDisabled(true)
         }
         else{
