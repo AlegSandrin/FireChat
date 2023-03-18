@@ -11,6 +11,8 @@ import ChatHeader from './ChatHeader'
 import SignOut from './SignOut'
 import { ChatRoom } from './ChatRoom'
 import ShowAlert from './ShowAlert'
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { IoClose } from 'react-icons/io5'
 
 export default function Chat({userData}) {
 
@@ -52,7 +54,7 @@ export default function Chat({userData}) {
 export function ChatMessage(props) {
 
     const CurrentUserID = props.CurrentUserID
-    const { text, uid, photoURL, createdAt, username, userID } = props.message;
+    const { text, uid, photoURL, createdAt, username, userID, imageURL } = props.message;
         const ts_ms = new Date(createdAt * 1000); // timestamp para milisegundos
         var date = new Date(ts_ms); // inicia um novo objeto Date
         var month = ("0" + (date.getMonth() + 1)).slice(-2); // mes
@@ -70,7 +72,30 @@ export function ChatMessage(props) {
     } 
     })
     
+    const [open, setOpen] = useState(false);
+    const handleClose = () => {
+        setOpen(false);
+        };
+
+    const showImage = (image, text, username, createdAt) => {
+        return(
+        <Dialog fullWidth maxWidth='md' open={open} onClose={handleClose}>
+        <DialogTitle>{username} - {createdAt}</DialogTitle>
+        <DialogContent sx={{justifyContent:'center', display:'flex'}}>
+            <img src={image} className='object-contain'></img>
+        </DialogContent>
+        {text && <DialogContentText sx={{paddingLeft:3, paddingRight:3}}> {text} </DialogContentText> }
+        <DialogActions sx={{paddingBottom:2, paddingRight:2, paddingLeft:3, gap:4}}>
+            <button className='text-[2rem] p-3 rounded-full' onClick={handleClose}><IoClose/></button>
+        </DialogActions>
+    </Dialog>
+    )
+    }
+
     return (
+<>
+    {open && showImage(imageURL, text, username, `${day}/${month} ${hours}:${minutes}`)}
+
     <div className={`div${messageClass} opacity-90 ml-2`}>
             
         <div className={`${messageClass} inline-flex m-5 rounded-xl brightness-125 py-1 px-2`}>
@@ -81,10 +106,12 @@ export function ChatMessage(props) {
                     <span className='text-base font-normal float-left -translate-x-8 m-1'>{username}<span className='ml-1 text-[0.5rem] font-thin'>{userID}</span></span>
                     <span className='float-right my-auto ml-auto'> {day}/{month} {hours}:{minutes}</span>
                 </div>
-            <p className='m-2 font-extralight break-all -translate-x-9 mt-0'>{text}</p>
+            {imageURL && <img className='max-h-[250px] max-w-full mx-auto p-2 cursor-pointer' src={imageURL} onClick={() => {setOpen(true)}}></img>}
+            {text && <p className='m-2 font-extralight break-all -translate-x-9 mt-0'>{text}</p>}
             </div>
         </div>
     </div>
+ </>   
     )
     
 }

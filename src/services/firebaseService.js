@@ -1,3 +1,4 @@
+import { getStorage } from 'firebase/storage'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
@@ -19,5 +20,6 @@ const provider = new firebase.auth.GoogleAuthProvider()
 provider.setCustomParameters({
   prompt: 'select_account'
 })
+const storage = getStorage(app)
 
-export { db, auth, provider }
+export { db, auth, provider, storage }

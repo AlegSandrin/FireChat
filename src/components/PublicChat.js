@@ -81,7 +81,7 @@ const [isDisabled, setIsDisabled] = useState(true)
 
             </main>
 
-            <form className='flex m-2 p-2 px-4 pt-0 drop-shadow-xl shadow-inner rounded-[2rem] overflow-hidden opacity-80 bg-[rgba(32,36,53,0.85)]' onSubmit={sendMessage}>
+            <form className='flex m-2 p-2 px-4 pt-0  drop-shadow-xl shadow-inner rounded-[2rem] overflow-hidden opacity-80 bg-[rgba(32,36,53,0.85)]' onSubmit={sendMessage}>
                 <TextField
                 variant='standard'
                 className='w-full h-full'
