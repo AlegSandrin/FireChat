@@ -16,7 +16,7 @@ html {
 }
 
 
-.SignIn, .SigInConfirm, .Loading{
+.SignIn, .SigInConfirm, .Loading, .ErrorPage{
   background: linear-gradient(to bottom right, #685773fc, #594a63f4, #54475efc), url("../src/assets/img/background3.png");
 }
 

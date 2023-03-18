@@ -5,12 +5,13 @@ import App from './App';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SignInConfirm from './pages/SignInConfirm';
 import Chat from './components/Chat';
+import ErrorPage from './pages/ErrorPage';
 
 const router = createBrowserRouter([
     {
     path: "/",
      element: <App/>,
-    //  errorElement: <ErrorPage/>,
+     errorElement: <ErrorPage/>,
      children: [
         {
             path: "/",
@@ -20,10 +21,6 @@ const router = createBrowserRouter([
             path: "confirm",
             element: <SignInConfirm/>
         },
-        // {
-        //     path: "/contact/:id",
-        //     element: <ContactDetails/>
-        // },
     ]
 }
 ])
