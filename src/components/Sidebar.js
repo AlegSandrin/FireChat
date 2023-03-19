@@ -1,7 +1,7 @@
 import { useCollection } from "react-firebase-hooks/firestore";
 import { MdContactMail } from "react-icons/md";
 import { IoMdAddCircle, IoIosPeople } from "react-icons/io";
-import { db} from '../services/firebaseService'
+import { db } from '../services/firebaseService'
 import SidebarChatsItem from "./SidebarChatsItem";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
@@ -85,7 +85,9 @@ const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
         <div className='flex-col gap-1 text-xl'>
             
             <Dialog fullWidth open={open} onClose={handleClose} >
-                <DialogTitle color='secondary' borderBottom={3} sx={{fontSize:25, backgroundColor:'secundary'}}>Adicionar Contato</DialogTitle>
+                <DialogTitle color='secondary' borderBottom={3} sx={{fontSize:25, backgroundColor:'secundary'}}>
+                <span className="text-lg sm:text-xl md:text-2xl">Adicionar Contato</span>
+                    </DialogTitle>
                 <DialogContent sx={{margin:5}}>
                     <DialogContentText sx={{fontSize:18}}>
                         Digite o <strong>ID do úsuario</strong>:

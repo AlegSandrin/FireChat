@@ -14,9 +14,14 @@ const firestore = firebase.firestore();
 export default function PublicChat({userData, setShowAlert}){
 
     const messagesRef = firestore.collection('messages'); 
+    
     const query = messagesRef.orderBy('createdAt');
+    const [messages,loading,error,querySnapshot] = useCollectionData(query)
 
-    const [messages] = useCollectionData(query); // Atualiza as informações conforme o banco de dados
+    const docRef = []
+        querySnapshot?.forEach(function(doc){
+        docRef.push(doc.ref)
+        })   
 
     const [formValue, setFormValue] = useState('')
 
@@ -27,7 +32,7 @@ export default function PublicChat({userData, setShowAlert}){
             refBody.current.scrollTop =
             refBody.current.scrollHeight - refBody.current.offsetHeight
         }
-    },[messagesRef])
+    },[messages])
 
     const sendMessage = async(e) => {
         e.preventDefault();
@@ -74,11 +79,13 @@ const [isDisabled, setIsDisabled] = useState(true)
         }   
     },[formValue])
 
+
+
     return(
+
         <div className='flex flex-col place-content-end h-full w-full overflow-hidden'>
             <main className='h-full overflow-auto overflow-x-hidden scroll-smooth pt-3' ref={refBody}>
-                { messages && messages.map((msg,index) => <ChatMessage key={index} message={msg}/> )}
-
+                { messages && messages.map((msg,index) => <ChatMessage key={index} message={msg} docRef={docRef[index]}/> )}
             </main>
 
             <form className='flex m-2 p-2 px-4 pt-0  drop-shadow-xl shadow-inner rounded-[2rem] overflow-hidden opacity-80 bg-[rgba(32,36,53,0.85)]' onSubmit={sendMessage}>

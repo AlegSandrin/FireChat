@@ -24,34 +24,39 @@ export default function PrivateChat({userChat, setShowAlert}){
     const userID = userChat.UserData.userID
     const username = userChat.UserData.username
 
+    const messagesRef = firestore.collection('privateChat').doc(docId).collection('messages')
+
     const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
-    const [messagesRef] = useCollectionData(q)
+    const [messages,loading,error,querySnapshot] = useCollectionData(q)
+
+    const docRef = []
+        querySnapshot?.forEach(function(doc){
+        docRef.push(doc.ref)
+        })   
 
     const refBody = useRef('')
-
     useEffect(() => {
         if (refBody.current.scrollHeight > refBody.current.offsetHeight){
             refBody.current.scrollTop =
             refBody.current.scrollHeight - refBody.current.offsetHeight
         }
-    },[messagesRef])
+    },[messages])
 
     const [formValue, setFormValue] = useState('')
 
-    const sendMessage = async(e) => {
+    const sendMessage = async (e) => {
        e.preventDefault(); 
 
         if(formValue.length > 0){
         
-        firestore.collection('privateChat').doc(docId).collection('messages').add
+        await messagesRef.add
         ({
             text: formValue, 
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             userID: userID,
             photoURL: photoURL,
             username: username
-        }) 
-        
+        })
         setFormValue('') 
     }
     }
@@ -111,7 +116,6 @@ export default function PrivateChat({userChat, setShowAlert}){
                 var imgPreview = document.getElementById('imgpreview');
                 imgPreview.setAttribute('src', e.target.result);
             }
-
             reader.readAsDataURL(input);
     }
 
@@ -124,13 +128,14 @@ export default function PrivateChat({userChat, setShowAlert}){
     return(
     <>
         <Dialog fullWidth maxWidth='md' open={open} onClose={handleClose}>
-                <DialogTitle color='secondary' borderBottom={3} sx={{fontSize:25, backgroundColor:'secundary', display:'flex', alignItems:'center', justifyContent:'space-between'}}>Enviar Imagem
+            <DialogTitle color='secondary' borderBottom={3} sx={{backgroundColor:'secundary', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                <span className="text-lg sm:text-xl md:text-2xl">Enviar Imagem</span>
                 <button className='text-[3rem] rounded-full float-right' onClick={handleClose}><IoClose/></button>
-                </DialogTitle>
-                <DialogContent sx={{marginTop:2, justifyContent:'center', display:'flex'}}>
+            </DialogTitle>
+            <DialogContent sx={{marginTop:2, justifyContent:'center', display:'flex'}}>
                     <img id="imgpreview" className='object-contain'></img>
-                </DialogContent>
-                <DialogActions sx={{paddingBottom:2, paddingRight:2, paddingLeft:3, gap:4}}>
+            </DialogContent>
+            <DialogActions sx={{paddingBottom:2, paddingRight:2, paddingLeft:3, gap:4}}>
                 <TextField
                 variant='outlined'
                 className='w-full h-full'
@@ -140,11 +145,10 @@ export default function PrivateChat({userChat, setShowAlert}){
                 </DialogActions>
             </Dialog>
 
-        <div className='flex flex-col place-content-end h-full w-full overflow-hidden '>
+        <div className='flex flex-col place-content-end h-full w-full overflow-hidden'>
+
             <main className='h-full overflow-y-auto scroll-smooth pt-3' ref={refBody}>
-                { messagesRef && messagesRef.map((msg, index) => <ChatMessage key={index} message={msg} CurrentUserID={userChat.UserData.userID}/> )}
-
-
+                { messages && messages.map((msg, index) => <ChatMessage key={index} message={msg} docRef={docRef[index]} CurrentUserID={userChat.UserData.userID}/> )}
             </main>
 
             <div className="flex items-center">

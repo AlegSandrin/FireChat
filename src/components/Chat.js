@@ -11,8 +11,10 @@ import ChatHeader from './ChatHeader'
 import SignOut from './SignOut'
 import { ChatRoom } from './ChatRoom'
 import ShowAlert from './ShowAlert'
+
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { IoClose } from 'react-icons/io5'
+import MessagesMenu from './MessagesMenu'
 
 export default function Chat({userData}) {
 
@@ -52,7 +54,7 @@ export default function Chat({userData}) {
 
 
 export function ChatMessage(props) {
-
+    const docRef = props?.docRef
     const CurrentUserID = props.CurrentUserID
     const { text, uid, photoURL, createdAt, username, userID, imageURL } = props.message;
         const ts_ms = new Date(createdAt * 1000); // timestamp para milisegundos
@@ -79,14 +81,16 @@ export function ChatMessage(props) {
 
     const showImage = (image, text, username, createdAt) => {
         return(
-        <Dialog fullWidth maxWidth='md' open={open} onClose={handleClose}>
-        <DialogTitle>{username} - {createdAt}</DialogTitle>
+    <Dialog fullWidth maxWidth='md' open={open} onClose={handleClose} >
+        <DialogTitle sx={{backgroundColor:'secundary', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+        <span className="text-sm sm:text-lg md:text-xl">{username} - {createdAt}</span><button className='text-[2rem] p-3 rounded-full' onClick={handleClose}><IoClose/></button>
+        </DialogTitle>
         <DialogContent sx={{justifyContent:'center', display:'flex'}}>
             <img src={image} className='object-contain'></img>
         </DialogContent>
         {text && <DialogContentText sx={{paddingLeft:3, paddingRight:3}}> {text} </DialogContentText> }
         <DialogActions sx={{paddingBottom:2, paddingRight:2, paddingLeft:3, gap:4}}>
-            <button className='text-[2rem] p-3 rounded-full' onClick={handleClose}><IoClose/></button>
+            
         </DialogActions>
     </Dialog>
     )
@@ -102,9 +106,11 @@ export function ChatMessage(props) {
 
             <img className='h-[35px] rounded-full mr-2 w-auto -translate-y-6 -translate-x-6' src={photo} referrerPolicy="no-referrer"/>
             <div>
-                <div className='flex font-thin text-[0.5rem] h-auto w-auto'>
-                    <span className='text-base font-normal float-left -translate-x-8 m-1'>{username}<span className='ml-1 text-[0.5rem] font-thin'>{userID}</span></span>
-                    <span className='float-right my-auto ml-auto'> {day}/{month} {hours}:{minutes}</span>
+                <div className='flex justify-between font-thin h-auto w-auto'>
+                    <span className='text-base font-normal -translate-x-8 m-1'>{username}<span className='ml-1 text-[0.5rem] font-thin'>{userID}</span></span>
+                    <span className='text-[0.5rem] my-auto ml-auto'> {day}/{month} {hours}:{minutes}</span>
+                    {userID === CurrentUserID && <MessagesMenu docRef={docRef}/>}
+                    {uid === auth.currentUser.uid && <MessagesMenu docRef={docRef}/>}
                 </div>
             {imageURL && <img className='max-h-[250px] max-w-full mx-auto p-2 cursor-pointer' src={imageURL} onClick={() => {setOpen(true)}}></img>}
             {text && <p className='m-2 font-extralight break-all -translate-x-9 mt-0'>{text}</p>}
