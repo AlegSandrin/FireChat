@@ -22,7 +22,6 @@ export default function PublicChat({userData, setShowAlert}){
     },[firestore])
 
     useEffect(() => {
-        console.log(msgQuery)
     },[msgQuery])
 
     const [messages,loading,error,querySnapshot] = useCollectionData(msgQuery)
