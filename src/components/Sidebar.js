@@ -5,20 +5,26 @@ import { db } from '../services/firebaseService'
 import SidebarChatsItem from "./SidebarChatsItem";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 
-const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
-
+const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => {
+    console.log('sidebar')
     const [idInput, setIdInput] = useState('')
-    const refChat = db
-    .collection('privateChat')
-    .where('users', 'array-contains', UserData.userID)
+    const [refChat, setRefChat] = useState()
+
+    useMemo(() => {  
+        const refChatData = db
+        .collection('privateChat')
+        .where('users', 'array-contains', UserData.userID)
+
+        setRefChat(refChatData)
+    },[UserData])
+
     const [chatsSnapshot] = useCollection(refChat)
     
-    const refUsersDB = collection(db, 'usersDB')
-
     const handleCreateChat = async () => {
+    const refUsersDB = collection(db, 'usersDB')    
 
         if(idInput === UserData.userID){
             const alert = {
@@ -81,6 +87,7 @@ const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
     setOpen(false);
     };
 
+    const [itemid, setItemid] = useState()
     return (
         <div className='flex-col gap-1 text-xl'>
             
@@ -127,7 +134,7 @@ const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
                 <div className="h-full w-full" key={index}>
                 <SidebarChatsItem
                 setUserChat={setUserChat} 
-                active={userChat?.chatId === item.id ? 'active' : ''}
+                active={userChat?.chatId === item?.id ? 'active' : ''}
                 id={item.id}
                 users={item.data().users}
                 user={UserData.userID}
@@ -138,6 +145,6 @@ const Sidebar = ({setUserChat, userChat, UserData, setShowAlert}) => {
                 }         
         </div>
     )
-}
+})
 
 export default Sidebar

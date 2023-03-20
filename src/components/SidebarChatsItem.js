@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { useCollection } from "react-firebase-hooks/firestore"
 import { MdPerson } from "react-icons/md"
 import { db } from "../services/firebaseService"
@@ -7,9 +8,21 @@ const getUser = (users, userLogged) =>
 
 
 export default function SidebarChatsItem({id, users, user, setUserChat, active, UserData}) {
-    const [getUserItem] = useCollection(
-        db.collection('usersDB').where('userID', '==', getUser(users, user))
-    )
+    
+    const [DBref, setDBref] = useState()
+    const [allUsers, setAllUsers] = useState()
+
+    useEffect(() => {
+    const getUsers = getUser(users, user)
+    setAllUsers(getUsers)
+    },[users])
+
+    useMemo(() => {
+    const ref = db.collection('usersDB').where('userID', '==', getUser(users, user))
+    setDBref(ref)
+    },[allUsers])
+
+    const [getUserItem] = useCollection(DBref)
 
     const User = getUserItem?.docs?.[0]?.data()
     

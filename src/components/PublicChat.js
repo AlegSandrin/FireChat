@@ -1,6 +1,6 @@
-import { ChatMessage } from "./Chat";
+import { ChatMessage } from './ChatMessage'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 
 import { auth } from '../services/firebaseService'
 import firebase from 'firebase/compat/app'
@@ -12,11 +12,15 @@ import { IoSend } from "react-icons/io5";
 const firestore = firebase.firestore();
 
 export default function PublicChat({userData, setShowAlert}){
-
-    const messagesRef = firestore.collection('messages'); 
     
-    const query = messagesRef.orderBy('createdAt');
-    const [messages,loading,error,querySnapshot] = useCollectionData(query)
+    const [msgQuery, setMsgQuery] = useState()
+
+    useMemo(() => {
+        const messagesRef = firestore.collection('messages'); 
+        const q = messagesRef.orderBy('createdAt');
+        setMsgQuery(q)
+    },[firestore])
+    const [messages,loading,error,querySnapshot] = useCollectionData(msgQuery)
 
     const docRef = []
         querySnapshot?.forEach(function(doc){
@@ -35,6 +39,7 @@ export default function PublicChat({userData, setShowAlert}){
     },[messages])
 
     const sendMessage = async(e) => {
+
         e.preventDefault();
 
         if(formValue.length > 0){
@@ -42,7 +47,7 @@ export default function PublicChat({userData, setShowAlert}){
         const { uid, photoURL } = auth.currentUser;
         const username = userData.username;
         const userID = userData.userID
-        await messagesRef.add({
+        await msgQuery.add({
             text: formValue, // Mensagem
             createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Quando foi enviada
             uid, // UID do usuário

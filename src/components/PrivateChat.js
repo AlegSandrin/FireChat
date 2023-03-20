@@ -1,6 +1,6 @@
-import { ChatMessage } from "./Chat";
+import { ChatMessage } from './ChatMessage'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 
 import { db, storage } from '../services/firebaseService'
 import firebase from 'firebase/compat/app'
@@ -18,16 +18,19 @@ import { uuidv4 } from "@firebase/util";
 const firestore = firebase.firestore();
 
 export default function PrivateChat({userChat, setShowAlert}){
-
+    
     const docId = userChat.chatId
     const photoURL = userChat.UserData.photoURL
     const userID = userChat.UserData.userID
     const username = userChat.UserData.username
+    const [msgQuery, setMsgQuery] = useState()
 
-    const messagesRef = firestore.collection('privateChat').doc(docId).collection('messages')
+    useMemo(() => {
+        const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
+        setMsgQuery(q)
+    },[docId])
 
-    const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
-    const [messages,loading,error,querySnapshot] = useCollectionData(q)
+    const [messages,loading,error,querySnapshot] = useCollectionData(msgQuery)
 
     const docRef = []
         querySnapshot?.forEach(function(doc){
@@ -45,6 +48,8 @@ export default function PrivateChat({userChat, setShowAlert}){
     const [formValue, setFormValue] = useState('')
 
     const sendMessage = async (e) => {
+    const messagesRef = firestore.collection('privateChat').doc(docId).collection('messages')
+
        e.preventDefault(); 
 
         if(formValue.length > 0){
