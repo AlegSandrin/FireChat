@@ -9,7 +9,7 @@ import React, { useMemo, useState } from "react";
 
 
 const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => {
-    console.log('sidebar')
+    
     const [idInput, setIdInput] = useState('')
     const [refChat, setRefChat] = useState()
 
