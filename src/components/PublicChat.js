@@ -16,10 +16,15 @@ export default function PublicChat({userData, setShowAlert}){
     const [msgQuery, setMsgQuery] = useState()
 
     useMemo(() => {
-        const messagesRef = firestore.collection('messages'); 
-        const q = messagesRef.orderBy('createdAt');
+        const messagesQuery = firestore.collection('messages'); 
+        const q = messagesQuery.orderBy('createdAt');
         setMsgQuery(q)
     },[firestore])
+
+    useEffect(() => {
+        console.log(msgQuery)
+    },[msgQuery])
+
     const [messages,loading,error,querySnapshot] = useCollectionData(msgQuery)
 
     const docRef = []
@@ -39,7 +44,7 @@ export default function PublicChat({userData, setShowAlert}){
     },[messages])
 
     const sendMessage = async(e) => {
-
+        const messagesRef = firestore.collection('messages'); 
         e.preventDefault();
 
         if(formValue.length > 0){
@@ -47,7 +52,7 @@ export default function PublicChat({userData, setShowAlert}){
         const { uid, photoURL } = auth.currentUser;
         const username = userData.username;
         const userID = userData.userID
-        await msgQuery.add({
+        await messagesRef.add({
             text: formValue, // Mensagem
             createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Quando foi enviada
             uid, // UID do usuário
