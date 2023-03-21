@@ -87,7 +87,6 @@ const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => 
     setOpen(false);
     };
 
-    const [itemid, setItemid] = useState()
     return (
         <div className='flex-col gap-1 text-xl'>
             
