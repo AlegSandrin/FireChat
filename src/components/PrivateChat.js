@@ -102,6 +102,7 @@ export default function PrivateChat({userChat, setShowAlert}){
                 firestore.collection('privateChat').doc(docId).collection('messages').add
                 ({
                 imageURL: url,
+                imagePath: promise.ref.fullPath,
                 text: imageText,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 userID: userID,
@@ -129,6 +130,19 @@ export default function PrivateChat({userChat, setShowAlert}){
     setImageText('')
     };
 
+    const imageValidation = (file) => {
+        if(file.target.files[0].type.includes('image')) {
+            setImageUpload(file.target.files[0], previewImage(file.target.files[0]))
+        } else{
+            const alert = {
+                severity:"warning",
+                setOpen:true, 
+                title:'Erro no envio',
+                message:'Só é permitido o envio de arquivos de imagem/gif'
+            }
+            setShowAlert(alert)
+        }
+    }
 
     return(
     <>
@@ -160,7 +174,7 @@ export default function PrivateChat({userChat, setShowAlert}){
 
             <label className="block cursor-pointer">
                 <FaCamera className="text-4xl ml-4 mr-2"/>
-                <input className="hidden" type="file" onChange={(e) => {setImageUpload(e.target.files[0], previewImage(e.target.files[0]))}}/>
+                <input className="hidden" type="file" accept="image/*" onChange={(e) => imageValidation(e)}/>
             </label>
             
             <form className='flex m-2 p-2 px-4 pb-0 pt-0 drop-shadow-xl w-full shadow-inner rounded-[2rem] overflow-hidden bg-[rgba(32,36,53,0.85)]' onSubmit={sendMessage}>

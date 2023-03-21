@@ -1,11 +1,12 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
 import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteObject, ref } from 'firebase/storage';
 import { useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { MdDelete, MdEdit } from 'react-icons/md';
-import { db } from '../services/firebaseService';
+import { db, storage } from '../services/firebaseService';
 
-export default function MessagesMenu({docRef}) {
+export default function MessagesMenu({docRef, imagePath}) {
 
     const [open, setOpen] = useState(false);
 
@@ -27,6 +28,14 @@ export default function MessagesMenu({docRef}) {
     };
 
     const deleteMessage = () => {
+        if(imagePath){
+            const imageRef = ref(storage, imagePath);
+        deleteObject(imageRef).then(() => {
+          }).catch((error) => {
+            console.log('error:', error)
+          });
+        }
+    
         deleteDoc(doc(db, docRef.path)).then(() => {
             handleCloseAlert()
             handleCloseMenu()

@@ -5,9 +5,9 @@ import { auth } from '../services/firebaseService'
 import { useState, useEffect } from 'react'
 
 export function ChatMessage(props) {
-    const docRef = props?.docRef
+    const docRef = props.docRef
     const CurrentUserID = props.CurrentUserID
-    const { text, uid, photoURL, createdAt, username, userID, imageURL } = props.message;
+    const { text, uid, photoURL, createdAt, username, userID, imageURL, imagePath } = props.message;
         const ts_ms = new Date(createdAt * 1000); // timestamp para milisegundos
         var date = new Date(ts_ms); // inicia um novo objeto Date
         var month = ("0" + (date.getMonth() + 1)).slice(-2); // mes
@@ -60,8 +60,8 @@ export function ChatMessage(props) {
                 <div className='flex justify-between font-thin h-auto w-auto'>
                     <span className='text-base font-normal -translate-x-8 m-1'>{username}<span className='ml-1 text-[0.5rem] font-thin'>{userID}</span></span>
                     <span className='text-[0.5rem] my-auto ml-auto'> {day}/{month} {hours}:{minutes}</span>
-                    {userID === CurrentUserID && <MessagesMenu docRef={docRef}/>}
-                    {uid === auth.currentUser.uid && <MessagesMenu docRef={docRef}/>}
+                    {userID === CurrentUserID && <MessagesMenu docRef={docRef} imagePath={imagePath}/>}
+                    {uid === auth.currentUser.uid && <MessagesMenu docRef={docRef} imagePath={imagePath}/>}
                 </div>
             {imageURL && <img className='max-h-[250px] max-w-full mx-auto p-2 cursor-pointer' src={imageURL} onClick={() => {setOpen(true)}}></img>}
             {text && <p className='m-2 font-extralight break-all -translate-x-9 mt-0'>{text}</p>}
