@@ -51,7 +51,8 @@ html {
 }
 
 .sidebar{
-  @apply animate-[showSidebar_.4s] md:animate-none md:left-0;
+  transition: filter;
+  @apply animate-[showSidebar_.4s] md:animate-none md:left-0 will-change-auto;
 }
 
 @keyframes showSidebar{
@@ -66,7 +67,9 @@ html {
 }
 
 .sidebarOut{
-  @apply animate-[hiddenSidebar_.4s] md:animate-none md:left-0;
+  transition: filter;
+  @apply animate-[hiddenSidebar_.4s] md:animate-none md:left-0 will-change-auto;
+
 }
 
 @keyframes hiddenSidebar{

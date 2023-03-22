@@ -1,12 +1,18 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
-import { deleteDoc, doc } from 'firebase/firestore';
-import { deleteObject, ref } from 'firebase/storage';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from '@mui/material'
+
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/firestore'
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import { deleteObject, ref } from 'firebase/storage'
+
 import { useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { MdDelete, MdEdit } from 'react-icons/md';
-import { db, storage } from '../services/firebaseService';
+import { IoClose, IoSend } from 'react-icons/io5'
+import { MdDelete, MdEdit } from 'react-icons/md'
+import { db, storage } from '../services/firebaseService'
 
-export default function MessagesMenu({docRef, imagePath}) {
+
+export default function MessagesMenu({docRef, imagePath, editMessage, imageURL}) {
 
     const [open, setOpen] = useState(false);
 
@@ -18,8 +24,32 @@ export default function MessagesMenu({docRef, imagePath}) {
       setOpen(false);
     };
 
+    const [openEdit, setOpenEdit] = useState(false)
+    const [toEditMessage, setToEditMessage] = useState(editMessage)
+
+    const handleClickOpenEdit = () => {
+      setOpenEdit(true);
+    };
+
+    const handleCloseEdit = () => {
+      setOpenEdit(false);
+    };
+
+    const handleEditMessage = async () => {
+      const messageRef = doc(db, docRef.path)
+
+      await updateDoc(messageRef, {
+      text: toEditMessage,
+      editedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      handleCloseEdit()
+      handleCloseMenu()
+    })
+    }
+
     const [anchorEl, setAnchorEl] = useState(null);
     const openMenu = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -42,57 +72,112 @@ export default function MessagesMenu({docRef, imagePath}) {
         })
     }
 
-    return(
-<>
+    return (
+      <>
+        <Dialog
+          fullWidth
+          maxWidth="md"
+          open={openEdit}
+          onClose={handleCloseEdit}
+        >
+          <DialogTitle
+            color="secondary"
+            borderBottom={3}
+            sx={{
+              backgroundColor: "secundary",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              className="text-lg sm:text-xl md:text-2xl"
+              onClick={handleEditMessage}
+            >
+              Editar mensagem
+            </span>
+            <button
+              className="float-right rounded-full text-[3rem]"
+              onClick={handleCloseEdit}
+            >
+              <IoClose />
+            </button>
+          </DialogTitle>
+          {imageURL && (
+            <DialogContent sx={{ justifyContent: "center", display: "flex" }}>
+              <img src={imageURL} className="object-contain"></img>
+            </DialogContent>
+          )}
+          <DialogContentText sx={{ padding: 3}}>
+            <p className='break-all'>{editMessage}</p>
+          </DialogContentText>
+          <DialogActions
+            sx={{ paddingBottom: 2, paddingRight: 2, paddingLeft: 3, gap: 4 }}
+          >
+            <TextField
+              variant="outlined"
+              className="h-full w-full"
+              multiline
+              maxRows={4}
+              value={toEditMessage}
+              onChange={(e) => setToEditMessage(e.target.value)}
+            />
+            <button
+              className="color5 rounded-full p-3 text-[2rem]"
+              onClick={handleEditMessage}
+            >
+              <IoSend />
+            </button>
+          </DialogActions>
+        </Dialog>
 
-<Dialog
-    open={open}
-    onClose={handleCloseAlert}
->
-    <DialogContent>
-        <DialogContentText>
-        Deseja realmente apagar a mensagem?
-        </DialogContentText>
-    </DialogContent>
-    <DialogActions>
-        <Button onClick={handleCloseAlert}> Cancelar </Button>
-        <Button onClick={deleteMessage} autoFocus> Apagar </Button>
-    </DialogActions>
-</Dialog>
+        <Dialog open={open} onClose={handleCloseAlert}>
+          <DialogContent>
+            <DialogContentText>
+              Deseja realmente apagar a mensagem?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseAlert}> Cancelar </Button>
+            <Button onClick={deleteMessage} autoFocus>
+              {" "}
+              Apagar{" "}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-    <div className='flex items-center m-2'>
-        <button
-        aria-controls={openMenu ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={openMenu ? 'true' : undefined}
-        onClick={handleClick}
-      >
-        <GiHamburgerMenu/>
-      </button>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={openMenu}
-        onClose={handleCloseMenu}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-      >
-        <MenuItem onClick={handleClickOpenAlert}>
-            <ListItemIcon>
-                <MdDelete className='text-[#cc264acf] text-xl'/>
-            </ListItemIcon>
-            <ListItemText className='text-[#cc264acf]'>Deletar</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>
-            <ListItemIcon>
-                <MdEdit className='text-white text-xl'/>
-            </ListItemIcon>
-            <ListItemText>Editar</ListItemText>
-        </MenuItem>
-
-      </Menu>
-    </div>
-</>
-    )
+        <div className="m-2 flex items-center">
+          <button
+            aria-controls={openMenu ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={openMenu ? "true" : undefined}
+            onClick={handleClick}
+          >
+            <GiHamburgerMenu />
+          </button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={openMenu}
+            onClose={handleCloseMenu}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleClickOpenAlert}>
+              <ListItemIcon>
+                <MdDelete className="text-xl text-[#cc264acf]" />
+              </ListItemIcon>
+              <ListItemText className="text-[#cc264acf]">Deletar</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleClickOpenEdit}>
+              <ListItemIcon>
+                <MdEdit className="text-xl text-white" />
+              </ListItemIcon>
+              <ListItemText>Editar</ListItemText>
+            </MenuItem>
+          </Menu>
+        </div>
+      </>
+    );
 }
