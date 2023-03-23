@@ -105,11 +105,16 @@ export default function MessagesMenu({docRef, imagePath, editMessage, imageURL})
           </DialogTitle>
           {imageURL && (
             <DialogContent sx={{ justifyContent: "center", display: "flex" }}>
-              <img src={imageURL} className="object-contain"></img>
+              <img
+                src={imageURL}
+                className="object-contain"
+                referrerPolicy="no-referrer"
+                alt='img'
+              ></img>
             </DialogContent>
           )}
-          <DialogContentText sx={{ padding: 3}}>
-            <p className='break-all'>{editMessage}</p>
+          <DialogContentText sx={{ padding: 3 }}>
+            <p className="break-all">{editMessage}</p>
           </DialogContentText>
           <DialogActions
             sx={{ paddingBottom: 2, paddingRight: 2, paddingLeft: 3, gap: 4 }}

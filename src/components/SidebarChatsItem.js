@@ -38,11 +38,25 @@ export default function SidebarChatsItem({id, users, user, setUserChat, active, 
         setUserChat(userChat)
     }
     
-    return(
-    <div className={`${active} border-t-[1px] border-b-[1px] border-opacity-30 border-gray-100 color3 flex items-center md:gap-2 hover:bg-[#a34373] transition cursor-pointer gap-1 p-2`} onClick={handleNewChat}>
-        {User ? <img className="xl:w-[60px] lg:w-[50px] w-[40px] rounded-full" alt="Imagem do Usuário" src={User.photoURL} referrerPolicy="no-referrer" /> : <MdPerson/>}
-        <span className="text-sm lg:text-base xl:text-lg text-ellipsis overflow-hidden">{User?.username}</span>
-    </div>
-    )
+    return (
+      <div
+        className={`${active} color3 flex cursor-pointer items-center gap-1 border-t-[1px] border-b-[1px] border-gray-100 border-opacity-30 p-2 transition hover:bg-[#a34373] md:gap-2`}
+        onClick={handleNewChat}
+      >
+        {User ? (
+          <img
+            className="w-[40px] rounded-full lg:w-[50px] xl:w-[60px]"
+            alt="Imagem do Usuário"
+            src={User.photoURL}
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <MdPerson />
+        )}
+        <span className="overflow-hidden text-ellipsis text-sm lg:text-base xl:text-lg">
+          {User?.username}
+        </span>
+      </div>
+    );
 
 }

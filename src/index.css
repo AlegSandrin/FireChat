@@ -9,14 +9,14 @@ html {
 }
 
 .container{
-  background: linear-gradient(to top, #353a52f1, #2e3349f3), url("../src/assets/img/background4.png");
+  background: linear-gradient(to top, #353a52f7, #2e3349f8), url("../src/assets/img/background4.png");
   height: 100vh; /* Use vh as a fallback for browsers that do not support Custom Properties */
   height: calc(var(--vh, 1vh) * 100);
   margin: 0 auto;
 }
 
 
-.SignIn, .SigInConfirm, .Loading, .ErrorPage{
+.SignIn, .SignInConfirm, .Loading, .ErrorPage{
   background: linear-gradient(to bottom right, #685773fc, #594a63f4, #54475efc), url("../src/assets/img/background3.png");
 }
 

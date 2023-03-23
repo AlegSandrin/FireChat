@@ -13,6 +13,19 @@
 
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
+    <!-- <script onload="imgsAttributes()">
+    window.onload = function imgsAttributes(){
+      var IMGs = document.querySelectorAll('img');
+      for (var i=0; i < IMGs.length; i++) {
+      IMGs[i].setAttribute("referrerPolicy", "no-referrer");
+      if(!IMGs[i].getAttribute('alt')){
+      IMGs[i].setAttribute("alt", "img");
+      }
+      console.log(IMGs[i])
+    }
+}
+    </script> -->
+
     <title>FireChat</title>
   </head>
   <body>

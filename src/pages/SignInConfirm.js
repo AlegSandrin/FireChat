@@ -63,36 +63,70 @@ export default function SignInConfirm({SignInConfirm}){
 
     }
 
-    return(
-        
-<div className="SigInConfirm flex h-[100vh] w-[100vw] place-items-center">
-    <div className='text-white rounded-3xl overflow-hidden drop-shadow-2xl shadow-inner m-auto md:h-[600px] md:w-[600px] h-[85%] w-[95%]'>
-        <header className='color1 p-3'>
-            <span className="flex md:text-3xl text-2xl font-medium justify-center">Finalizando Cadastro</span>
-        </header>
-        <div className='flex flex-col color4 md:p-20 p-5 py-12 rounded-b-3xl'>
-
+    return (
+      <div className="SignInConfirm flex h-screen place-items-center">
+        <div className="m-auto h-[85%] w-[95%] overflow-hidden rounded-3xl text-white shadow-inner drop-shadow-2xl md:h-[600px] md:w-[600px]">
+          <header className="color1 p-3">
+            <span className="flex justify-center text-2xl font-medium md:text-3xl">
+              Finalizando Cadastro
+            </span>
+          </header>
+          <div className="color4 flex flex-col rounded-b-3xl p-5 py-12 md:p-20">
             <form className="flex flex-col" onSubmit={SubmitUser}>
-                <div className="flex flex-col gap-2 mb-7">
-                <span className="md:text-2xl text-xl">Nome de Usuário</span>
-                <span className="text-xs opacity-80">(Nome que aparecerá para outros usuários)</span>
-                <input className="outline-none rounded-xl p-3 text-black" value={username} placeholder="Nickname" id='username' onChange={(e) => setUsername(e.target.value)}></input>
-                <p className={`font-bold md:mb-0 mb-5 text-xs ${username.length > 20 ? 'text-red-700' : 'text-white'}`}>{`${username.length}/20`}</p>
-                </div>
+              <div className="mb-7 flex flex-col gap-2">
+                <span className="text-xl md:text-2xl">Nome de Usuário</span>
+                <span className="text-xs opacity-80">
+                  (Nome que aparecerá para outros usuários)
+                </span>
+                <input
+                  className="rounded-xl p-3 text-black outline-none"
+                  value={username}
+                  placeholder="Nickname"
+                  id="username"
+                  onChange={(e) => setUsername(e.target.value)}
+                ></input>
+                <p
+                  className={`mb-5 text-xs font-bold md:mb-0 ${
+                    username.length > 20 ? "text-red-700" : "text-white"
+                  }`}
+                >{`${username.length}/20`}</p>
+              </div>
 
-                <div className="flex flex-col gap-2 md:mb-7 mb-4">
-                <span className="md:text-2xl text-xl">Seu ID de Usuário</span>
-                <span className="text-xs opacity-80">(ID que utilizarão para adicionar-te aos contatos)</span>
-                <input className="outline-none rounded-xl p-3 text-black" value={userID} placeholder="UserID" id='userID' onChange={(e) => setUserID(e.target.value)}></input>
-                <p className={`font-bold md:mb-0 mb-5 text-xs ${userID.length > 20 ? 'text-red-700' : 'text-white'}`}>{`${userID.length}/20`}</p>
-                </div>
+              <div className="mb-4 flex flex-col gap-2 md:mb-7">
+                <span className="text-xl md:text-2xl">Seu ID de Usuário</span>
+                <span className="text-xs opacity-80">
+                  (ID que utilizarão para adicionar-te aos contatos)
+                </span>
+                <input
+                  className="rounded-xl p-3 text-black outline-none"
+                  value={userID}
+                  placeholder="UserID"
+                  id="userID"
+                  onChange={(e) => setUserID(e.target.value)}
+                ></input>
+                <p
+                  className={`mb-5 text-xs font-bold md:mb-0 ${
+                    userID.length > 20 ? "text-red-700" : "text-white"
+                  }`}
+                >{`${userID.length}/20`}</p>
+              </div>
 
-                <button disabled={isDisabled} className={`rounded-xl md:p-4 p-3 color2 md:text-xl text-lg font-medium transition ${isDisabled ? 'saturate-0' : 'saturate-100 hover:brightness-125'}`} type="submit">Enviar</button>
+              <button
+                disabled={isDisabled}
+                className={`color2 rounded-xl p-3 text-lg font-medium transition md:p-4 md:text-xl ${
+                  isDisabled
+                    ? "saturate-0"
+                    : "saturate-100 hover:brightness-125"
+                }`}
+                type="submit"
+              >
+                Enviar
+              </button>
             </form>
+          </div>
         </div>
-    </div>
-</div>
-)
+      </div>
+    );
 }
 
 

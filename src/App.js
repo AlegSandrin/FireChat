@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { createTheme, CssBaseline } from "@mui/material";
+import { createTheme } from "@mui/material";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -84,7 +84,6 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-    <CssBaseline />
       {components()}
     </ThemeProvider>
   );

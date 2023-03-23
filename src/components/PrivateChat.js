@@ -131,68 +131,130 @@ export default function PrivateChat({userChat, setShowAlert}){
     };
 
     const imageValidation = (file) => {
-        if(file.target.files[0].type.includes('image')) {
-            setImageUpload(file.target.files[0], previewImage(file.target.files[0]))
-        } else{
-            const alert = {
-                severity:"warning",
-                setOpen:true, 
-                title:'Erro no envio',
-                message:'Só é permitido o envio de arquivos de imagem/gif'
-            }
-            setShowAlert(alert)
-        }
+      if (file.target.files[0]?.type.includes("image")) {
+        setImageUpload(
+          file.target.files[0],
+          previewImage(file.target.files[0])
+        );
+      } else {
+        const alert = {
+          severity: "warning",
+          setOpen: true,
+          title: "Erro no envio",
+          message: "Só é permitido o envio de arquivos de imagem/gif",
+        };
+        setShowAlert(alert);
+      }
     }
 
-    return(
-    <>
-        <Dialog fullWidth maxWidth='md' open={open} onClose={handleClose}>
-            <DialogTitle color='secondary' borderBottom={3} sx={{backgroundColor:'secundary', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-                <span className="text-lg sm:text-xl md:text-2xl">Enviar Imagem</span>
-                <button className='text-[3rem] rounded-full float-right' onClick={handleClose}><IoClose/></button>
-            </DialogTitle>
-            <DialogContent sx={{marginTop:2, justifyContent:'center', display:'flex'}}>
-                    <img id="imgpreview" className='object-contain'></img>
-            </DialogContent>
-            <DialogActions sx={{paddingBottom:2, paddingRight:2, paddingLeft:3, gap:4}}>
-                <TextField
-                variant='outlined'
-                className='w-full h-full'
-                value={imageText} onChange={(e) => setImageText(e.target.value)}
+    return (
+      <>
+        <Dialog fullWidth maxWidth="md" open={open} onClose={handleClose}>
+          <DialogTitle
+            color="secondary"
+            borderBottom={3}
+            sx={{
+              backgroundColor: "secundary",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span className="text-lg sm:text-xl md:text-2xl">
+              Enviar Imagem
+            </span>
+            <button
+              className="float-right rounded-full text-[3rem]"
+              onClick={handleClose}
+            >
+              <IoClose />
+            </button>
+          </DialogTitle>
+          <DialogContent
+            sx={{ marginTop: 2, justifyContent: "center", display: "flex" }}
+          >
+            <img
+              id="imgpreview"
+              className="object-contain"
+              referrerPolicy="no-referrer"
+              alt='imgpreview'
+            />
+          </DialogContent>
+          <DialogActions
+            sx={{ paddingBottom: 2, paddingRight: 2, paddingLeft: 3, gap: 4 }}
+          >
+            <TextField
+              variant="outlined"
+              className="h-full w-full"
+              value={imageText}
+              onChange={(e) => setImageText(e.target.value)}
+            />
+            <button
+              className="color5 rounded-full p-3 text-[2rem]"
+              onClick={uploadImage}
+            >
+              <IoSend />
+            </button>
+          </DialogActions>
+        </Dialog>
+
+        <div className="flex h-full w-full flex-col place-content-end overflow-hidden">
+          <main
+            className="h-full overflow-y-auto scroll-smooth pt-3"
+            ref={refBody}
+          >
+            {messages &&
+              messages.map((msg, index) => (
+                <ChatMessage
+                  key={index}
+                  message={msg}
+                  docRef={docRef[index]}
+                  CurrentUserID={userChat.UserData.userID}
                 />
-                    <button className='rounded-full text-[2rem] p-3 color5' onClick={uploadImage}><IoSend/></button>
-                </DialogActions>
-            </Dialog>
+              ))}
+          </main>
 
-        <div className='flex flex-col place-content-end h-full w-full overflow-hidden'>
-
-            <main className='h-full overflow-y-auto scroll-smooth pt-3' ref={refBody}>
-                { messages && messages.map((msg, index) => <ChatMessage key={index} message={msg} docRef={docRef[index]} CurrentUserID={userChat.UserData.userID}/> )}
-            </main>
-
-            <div className="flex items-center">
-
+          <div className="flex items-center">
             <label className="block cursor-pointer">
-                <FaCamera className="text-4xl ml-4 mr-2"/>
-                <input className="hidden" type="file" accept="image/*" onChange={(e) => imageValidation(e)}/>
+              <FaCamera className="ml-4 mr-2 text-4xl" />
+              <input
+                id='sendImage'
+                className="hidden"
+                type="file"
+                accept="image/*"
+                onChange={(e) => imageValidation(e)}
+              />
             </label>
-            
-            <form className='flex m-2 p-2 px-4 pb-0 pt-0 drop-shadow-xl w-full shadow-inner rounded-[2rem] overflow-hidden bg-[rgba(32,36,53,0.85)]' onSubmit={sendMessage}>
-             
-                <TextField
-                variant='standard'
-                className='w-full h-full'
-                value={formValue} onChange={(e) => {setFormValue(e.target.value); setImageText(e.target.value)}}
-                InputProps={{
-                endAdornment: (
-                    <button disabled={isDisabled} className={`${isDisabled && 'saturate-0'} transition rounded-full text-[2rem] p-3 m-1 float-right color5`} type="submit"><IoSend/></button>
-                )
+
+            <form
+              className="m-2 flex w-full overflow-hidden rounded-[2rem] bg-[rgba(32,36,53,0.85)] p-2 px-4 pb-0 pt-0 shadow-inner drop-shadow-xl"
+              onSubmit={sendMessage}
+            >
+              <TextField
+                variant="standard"
+                className="h-full w-full"
+                value={formValue}
+                onChange={(e) => {
+                  setFormValue(e.target.value)
+                  setImageText(e.target.value)
                 }}
-                />
-                
+                InputProps={{
+                  endAdornment: (
+                    <button
+                      disabled={isDisabled}
+                      className={`${
+                        isDisabled && "saturate-0"
+                      } color5 float-right m-1 rounded-full p-3 text-[2rem] transition`}
+                      type="submit"
+                    >
+                      <IoSend />
+                    </button>
+                  ),
+                }}
+              />
             </form>
-            </div>
+          </div>
         </div>
-    </>
-    )
+      </>
+    );
 }
