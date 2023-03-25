@@ -20,9 +20,11 @@ export default function Chat({userData}) {
     const [sidebar, setSidebar] = useState(false)
     const showSidebar = () => setSidebar(!sidebar)
 
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-
+    if (window.innerWidth < 640) {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
+    
     return (
       <div className="container max-w-full">
         {showAlert?.setOpen === true && <ShowAlert showAlert={showAlert} />}

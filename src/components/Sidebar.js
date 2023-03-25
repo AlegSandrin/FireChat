@@ -129,6 +129,7 @@ const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => 
                 <IoMdAddCircle className="cursor-pointer" onClick={handleClickOpen}/>
                 </div>
             </div>
+            <div className="overflow-y-auto">
                 {chatsSnapshot?.docs.map((item, index) => (
                 <div className="h-full w-full" key={index}>
                 <SidebarChatsItem
@@ -141,7 +142,8 @@ const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => 
                 />
                 </div>
                 ))
-                }         
+                }    
+            </div>     
         </div>
     )
 })
