@@ -3,6 +3,8 @@
   "version": "0.2.0",
   "private": true,
   "main": "public/electron.js",
+  "browser": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "homepage": "./",
   "author": {
     "name": "alexsandro urbano",
