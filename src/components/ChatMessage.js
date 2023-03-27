@@ -3,11 +3,15 @@ import { IoClose } from 'react-icons/io5'
 import MessagesMenu from './MessagesMenu'
 import { auth } from '../services/firebaseService'
 import { useState, useEffect } from 'react'
+import { FaPlay } from 'react-icons/fa'
 
 export function ChatMessage(props) {
     const docRef = props.docRef
     const CurrentUserID = props.CurrentUserID
-    const { text, uid, photoURL, createdAt, username, userID, imageURL, imagePath, editedAt } = props.message;
+    const { text, uid, photoURL, createdAt, username, userID, imageURL, imagePath, videoURL, videoPath, editedAt } = props.message;
+    let type = ''
+    if(imageURL) type = 'image'
+    if(videoURL) type = 'video'
 
         const ts_ms = new Date(createdAt * 1000); // timestamp para milisegundos
         var date = new Date(ts_ms); // inicia um novo objeto Date
@@ -39,7 +43,7 @@ export function ChatMessage(props) {
         setOpen(false);
         };
 
-    const showImage = (image, text, username, createdAt) => {
+    const showFile = (file, text, type, username, createdAt) => {
         return (
           <Dialog fullWidth maxWidth="md" open={open} onClose={handleClose}>
             <DialogTitle
@@ -61,16 +65,28 @@ export function ChatMessage(props) {
               </button>
             </DialogTitle>
             <DialogContent sx={{ justifyContent: "center", display: "flex" }}>
-              <img
-                src={image}
-                className="object-contain"
-                referrerPolicy="no-referrer"
-              />
+              {type === "image" && (
+                <img
+                  src={file}
+                  className="object-contain"
+                  referrerPolicy="no-referrer"
+                />
+              )}
+              {type === "video" && (
+                <video
+                  src={file}
+                  controls
+                  className="object-contain"
+                  referrerPolicy="no-referrer"
+                >
+                  Seu navegador não suporta a reprodução de vídeo. Faça o
+                  download do arquivo <a href={file}>clicando aqui.</a>
+                </video>
+              )}
             </DialogContent>
             {text && (
               <DialogContentText sx={{ paddingLeft: 3, paddingRight: 3 }}>
-                {" "}
-                {text}{" "}
+                {text}
               </DialogContentText>
             )}
             <DialogActions
@@ -83,9 +99,10 @@ export function ChatMessage(props) {
     return (
       <>
         {open &&
-          showImage(
-            imageURL,
+          showFile(
+            imageURL || videoURL,
             text,
+            type,
             username,
             `${day}/${month} ${hours}:${minutes}`
           )}
@@ -118,17 +135,19 @@ export function ChatMessage(props) {
                 {userID === CurrentUserID && (
                   <MessagesMenu
                     docRef={docRef}
-                    imagePath={imagePath}
+                    filePath={imagePath || videoPath}
                     editMessage={text}
-                    imageURL={imageURL}
+                    fileURL={imageURL || videoURL}
+                    type={type}
                   />
                 )}
                 {uid === auth.currentUser.uid && (
                   <MessagesMenu
                     docRef={docRef}
-                    imagePath={imagePath}
+                    filePath={imagePath || videoPath}
                     editMessage={text}
-                    imageURL={imageURL}
+                    fileURL={imageURL || videoURL}
+                    type={type}
                   />
                 )}
               </div>
@@ -140,6 +159,21 @@ export function ChatMessage(props) {
                     setOpen(true);
                   }}
                 ></img>
+              )}
+              {videoURL && (
+                <div className="transition flex justify-center items-center hover:text-[#cc264af6] w-auto h-auto">
+                  <FaPlay className="absolute text-4xl opacity-60" />
+                  <video
+                    className=" mx-auto max-h-[250px] max-w-full cursor-pointer p-2"
+                    src={videoURL}
+                    onClick={() => {
+                      setOpen(true);
+                    }}
+                  >
+                    Seu navegador não suporta a reprodução de vídeo. Faça o
+                    download do arquivo <a href={videoURL}>clicando aqui.</a>
+                  </video>
+                </div>
               )}
               {text && (
                 <p className="m-2 mt-0 -translate-x-9 break-all font-extralight">

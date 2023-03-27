@@ -90,62 +90,102 @@ export default function PrivateChat({userChat, setShowAlert}){
         }   
     },[formValue])
 
-    const [imageUpload, setImageUpload] = useState(null)
-    const [imageText, setImageText] = useState(formValue)
+    const [fileUpload, setFileUpload] = useState(null)
+    const [fileText, setFileText] = useState(formValue)
 
-    const uploadImage = () => {
-        if (imageUpload === null) return;
+    const uploadFile = () => {
+        if (fileUpload === null || fileUpload === undefined) return;
+
+        const file = fileUpload[0]
+        const type = fileUpload[1]
+
         handleClose()
-        const imageRef = ref(storage, `privateChat/${docId}/${imageUpload.name + uuidv4()}` )
-        uploadBytes(imageRef, imageUpload).then((promise) => {
-            getDownloadURL(promise.ref).then((url) =>{
-                firestore.collection('privateChat').doc(docId).collection('messages').add
-                ({
-                imageURL: url,
-                imagePath: promise.ref.fullPath,
-                text: imageText,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                userID: userID,
-                photoURL: photoURL,
-                username: username
-                }) 
+        const fileRef = ref(storage, `privateChat/${docId}/${file.name + uuidv4()}` )
+        uploadBytes(fileRef, file).then((promise) => {
+            getDownloadURL(promise.ref).then((url) => {
+              const addFile = {
+                text: fileText,
+                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                 userID: userID,
+                 photoURL: photoURL,
+                 username: username,
+              }
+              if(type === "image") {
+                addFile.imageURL = url;
+                addFile.imagePath = promise.ref.fullPath;
+              }
+              if(type === "video"){
+                addFile.videoURL = url;
+                addFile.videoPath = promise.ref.fullPath;
+              }
+                firestore.collection('privateChat').doc(docId).collection('messages').add(addFile) 
             })
         })
     }  
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
+    const [imgPreview, setImgPreview] = useState()
+    const [videoPreview, setVideoPreview] = useState()
 
-    const previewImage = (input) => {
+    const previewFile = (input, type) => {
         setOpen(true);
             var reader = new FileReader()
             reader.onload = function(e){
-                var imgPreview = document.getElementById('imgpreview');
-                imgPreview.setAttribute('src', e.target.result);
+              if(type === "image"){
+                setImgPreview(e.target.result);
+                }
+              if(type === "video"){
+                setVideoPreview(e.target.result);
+              }
             }
             reader.readAsDataURL(input);
     }
 
     const handleClose = () => {
     setOpen(false);
-    setImageText('')
+    setFileText('')
+    setImgPreview(null)
+    setVideoPreview(null)
     };
 
-    const imageValidation = (file) => {
-      if (file.target.files[0]?.type.includes("image")) {
-        setImageUpload(
-          file.target.files[0],
-          previewImage(file.target.files[0])
-        );
-      } else {
+    const fileValidation = (file) => {
+      // 1MB = 1,048,576 bytes - sizelimit = 200mb
+      const sizelimit = 204857600
+      if (file.target.files[0]?.size > sizelimit){
         const alert = {
           severity: "warning",
           setOpen: true,
           title: "Erro no envio",
-          message: "Só é permitido o envio de arquivos de imagem/gif",
+          message: "Arquivo muito grande. Limite: 200MB",
         };
         setShowAlert(alert);
       }
-    }
+      else if (file.target.files[0]?.type.includes("image")
+      || file.target.files[0]?.type.includes("video"))
+      {
+
+      if (file.target.files[0]?.type.includes("image")) {
+        setFileUpload([file.target.files[0], "image"]);
+        previewFile(file.target.files[0], "image")
+      }
+
+      if (file.target.files[0]?.type.includes("video")) {
+        setFileUpload([file.target.files[0], "video"]);
+        previewFile(file.target.files[0], "video")
+
+      } 
+      }
+      else {
+        const alert = {
+          severity: "warning",
+          setOpen: true,
+          title: "Erro no envio",
+          message: "Só é permitido o envio de arquivos de imagem/gif ou video",
+        };
+        setShowAlert(alert);
+      }
+  
+  }
 
     return (
       <>
@@ -173,12 +213,23 @@ export default function PrivateChat({userChat, setShowAlert}){
           <DialogContent
             sx={{ marginTop: 2, justifyContent: "center", display: "flex" }}
           >
-            <img
-              id="imgpreview"
-              className="object-contain"
-              referrerPolicy="no-referrer"
-              alt='imgpreview'
-            />
+            {imgPreview && (
+              <img
+                src={imgPreview}
+                className="object-contain"
+                referrerPolicy="no-referrer"
+                alt="imgpreview"
+              />
+            )}
+            {videoPreview && (
+              <video
+                src={videoPreview}
+                controls
+                className="object-contain"
+                referrerPolicy="no-referrer"
+                alt="videopreview"
+              />
+            )}
           </DialogContent>
           <DialogActions
             sx={{ paddingBottom: 2, paddingRight: 2, paddingLeft: 3, gap: 4 }}
@@ -186,12 +237,12 @@ export default function PrivateChat({userChat, setShowAlert}){
             <TextField
               variant="outlined"
               className="h-full w-full"
-              value={imageText}
-              onChange={(e) => setImageText(e.target.value)}
+              value={fileText}
+              onChange={(e) => setFileText(e.target.value)}
             />
             <button
               className="color5 rounded-full p-3 text-[2rem]"
-              onClick={uploadImage}
+              onClick={uploadFile}
             >
               <IoSend />
             </button>
@@ -218,11 +269,11 @@ export default function PrivateChat({userChat, setShowAlert}){
             <label className="block cursor-pointer">
               <FaCamera className="ml-4 mr-2 text-4xl" />
               <input
-                id='sendImage'
+                id="sendImage"
                 className="hidden"
                 type="file"
-                accept="image/*"
-                onChange={(e) => imageValidation(e)}
+                accept="image/* , video/*"
+                onChange={(e) => fileValidation(e)}
               />
             </label>
 
@@ -235,8 +286,8 @@ export default function PrivateChat({userChat, setShowAlert}){
                 className="h-full w-full"
                 value={formValue}
                 onChange={(e) => {
-                  setFormValue(e.target.value)
-                  setImageText(e.target.value)
+                  setFormValue(e.target.value);
+                  setFileText(e.target.value);
                 }}
                 InputProps={{
                   endAdornment: (

@@ -12,7 +12,7 @@ import { MdDelete, MdEdit } from 'react-icons/md'
 import { db, storage } from '../services/firebaseService'
 
 
-export default function MessagesMenu({docRef, imagePath, editMessage, imageURL}) {
+export default function MessagesMenu({docRef, filePath, editMessage, fileURL, type}) {
 
     const [open, setOpen] = useState(false);
 
@@ -58,9 +58,9 @@ export default function MessagesMenu({docRef, imagePath, editMessage, imageURL})
     };
 
     const deleteMessage = () => {
-        if(imagePath){
-            const imageRef = ref(storage, imagePath);
-        deleteObject(imageRef).then(() => {
+        if(filePath){
+            const fileRef = ref(storage, filePath);
+        deleteObject(fileRef).then(() => {
           }).catch((error) => {
             console.log('error:', error)
           });
@@ -103,18 +103,33 @@ export default function MessagesMenu({docRef, imagePath, editMessage, imageURL})
               <IoClose />
             </button>
           </DialogTitle>
-          {imageURL && (
-            <DialogContent sx={{ justifyContent: "center", display: "flex" }}>
-              <img
-                src={imageURL}
-                className="object-contain"
-                referrerPolicy="no-referrer"
-                alt='img'
-              ></img>
+          {fileURL && (
+            <DialogContent sx={{ justifyContent: "center", display: "flex", marginTop: 3 }}>
+              {type === "image" && 
+                (
+                  <img
+                    src={fileURL}
+                    className="object-contain"
+                    referrerPolicy="no-referrer"
+                    alt="img"
+                  ></img>
+                )}
+              {type === "video" &&
+                (
+                  <video
+                    src={fileURL}
+                    controls
+                    className="object-contain"
+                    referrerPolicy="no-referrer"
+                  >
+                    Seu navegador não suporta a reprodução de vídeo.
+                  Faça o download do arquivo <a href={fileURL}>clicando aqui.</a>
+                  </video>
+                )}
             </DialogContent>
           )}
           <DialogContentText sx={{ padding: 3 }}>
-            <p className="break-all">{editMessage}</p>
+            <label className="break-all">{editMessage}</label>
           </DialogContentText>
           <DialogActions
             sx={{ paddingBottom: 2, paddingRight: 2, paddingLeft: 3, gap: 4 }}
@@ -145,8 +160,7 @@ export default function MessagesMenu({docRef, imagePath, editMessage, imageURL})
           <DialogActions>
             <Button onClick={handleCloseAlert}> Cancelar </Button>
             <Button onClick={deleteMessage} autoFocus>
-              {" "}
-              Apagar{" "}
+              Apagar
             </Button>
           </DialogActions>
         </Dialog>
