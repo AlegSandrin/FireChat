@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
+
+html {
+  font-family: 'Martian Mono', monospace;
+}
+
+.container{
+  background: linear-gradient(to top, #353a52f7, #2e3349f8), url("../src/assets/img/background4.png");
+  height: 100vh; /* Use vh as a fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+  margin: 0 auto;
+}
+
+
+.SignIn, .SignInConfirm, .Loading, .ErrorPage{
+  background: linear-gradient(to bottom right, #685773fc, #594a63f4, #54475efc), url("../src/assets/img/background3.png");
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #33384e;
+  border-radius: 20px;
+  border: 3px solid #fcf3e3;
+}
+
+.sent{
+  @apply color5
+}
+
+.received{
+  @apply color4
+}
+
+.divsent{
+  @apply flex flex-row-reverse
+}
+
+.sidebar{
+  transition: filter;
+  @apply animate-[showSidebar_.4s] md:animate-none md:left-0 will-change-auto;
+}
+
+@keyframes showSidebar{
+  from {
+    opacity: 0;
+    left: -100%;
+  }
+  to {
+    opacity: 1;
+    left: 0;
+  }
+}
+
+.sidebarOut{
+  transition: filter;
+  @apply animate-[hiddenSidebar_.4s] md:animate-none md:left-0 will-change-auto;
+
+}
+
+@keyframes hiddenSidebar{
+  from {
+    opacity: 1;
+    left: 0;
+  }
+  to {
+    opacity: 0;
+    left: -100%;
+  }
+}
+
+.color1 { @apply bg-[#cc264acf] };
+.color2 { @apply bg-[#992c4bc6] };
+.color3 { @apply bg-[#66324cc0] };
+.color4 { @apply bg-[#33384ec5] };
+.color5 { @apply bg-[#003e4fcc] };
+
+.active{
+  @apply bg-[#8b3c64]
+}
+
+.color6 { @apply bg-[#802f2f] };
