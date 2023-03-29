@@ -5,6 +5,8 @@ import { auth } from '../services/firebaseService'
 import { useState, useEffect } from 'react'
 import { FaPlay } from 'react-icons/fa'
 
+import useStore from '../store'
+
 export function ChatMessage(props) {
     const docRef = props.docRef
     const CurrentUserID = props.CurrentUserID
@@ -12,6 +14,7 @@ export function ChatMessage(props) {
     let type = ''
     if(imageURL) type = 'image'
     if(videoURL) type = 'video'
+
 
         const ts_ms = new Date(createdAt * 1000); // timestamp para milisegundos
         var date = new Date(ts_ms); // inicia um novo objeto Date

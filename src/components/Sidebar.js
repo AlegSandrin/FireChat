@@ -6,10 +6,18 @@ import SidebarChatsItem from "./SidebarChatsItem";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import React, { useMemo, useState } from "react";
-
+import useStore from "../store";
+import { useEffect } from "react";
 
 const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => {
     
+        const lastMessage = useStore((state) => state.lastMessage);
+
+        useEffect(() => {
+          console.log(lastMessage);
+        }, [lastMessage]);
+
+
     const [idInput, setIdInput] = useState('')
     const [refChat, setRefChat] = useState()
 

@@ -14,6 +14,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import { FaCamera } from "react-icons/fa";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { uuidv4 } from "@firebase/util";
+import { useStore } from 'zustand'
 
 const firestore = firebase.firestore();
 
@@ -25,12 +26,19 @@ export default function PrivateChat({userChat, setShowAlert}){
     const username = userChat.UserData.username
     const [msgQuery, setMsgQuery] = useState()
 
-    useMemo(() => {
+    useMemo(async () => {
         const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
         setMsgQuery(q)
     },[docId])
 
-    const [messages,loading,error,querySnapshot] = useCollectionData(msgQuery)
+    const [messages,_loading,_error,querySnapshot] = useCollectionData(msgQuery)
+
+    // messages && messages.forEach((lastmsg) => {
+    //   const setLastMessage = useStore((state) => state.setLastMessage);
+
+    //   setLastMessage({ chatId: userChat.chatId, text: lastmsg.text });
+
+    // })
 
     const docRef = []
         querySnapshot?.forEach(function(doc){

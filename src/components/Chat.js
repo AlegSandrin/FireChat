@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { FaBars, FaTimes } from 'react-icons/fa'
 
@@ -19,6 +19,10 @@ export default function Chat({userData}) {
     const [showAlert, setShowAlert] = useState()
     const [sidebar, setSidebar] = useState(false)
     const showSidebar = () => setSidebar(!sidebar)
+
+    useEffect(() => {
+      console.log(userChat)
+    },[userChat])
 
     if (window.innerWidth < 640) {
       let vh = window.innerHeight * 0.01;
