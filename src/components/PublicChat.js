@@ -11,7 +11,7 @@ import { IoSend } from "react-icons/io5";
 
 const firestore = firebase.firestore();
 
-export default function PublicChat({userData, setShowAlert}){
+export default function PublicChat({setShowAlert}){
     
     const [msgQuery, setMsgQuery] = useState()
 
@@ -49,8 +49,7 @@ export default function PublicChat({userData, setShowAlert}){
         if(formValue.length > 0){
 
         const { uid, photoURL } = auth.currentUser;
-        const username = userData.username;
-        const userID = userData.userID
+        const {userID, username} = useChat((state) => state.userData);
         await messagesRef.add({
             text: formValue, // Mensagem
             createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Quando foi enviada

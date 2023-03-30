@@ -7,24 +7,24 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
 import 'firebase/compat/auth'
 
-import { query } from "firebase/firestore";
+import { getDocs, query } from "firebase/firestore";
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { IoClose, IoSend } from "react-icons/io5";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { FaCamera } from "react-icons/fa";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { uuidv4 } from "@firebase/util";
-import { useStore } from 'zustand'
+import useChat from '../chatState'
 
 const firestore = firebase.firestore();
 
-export default function PrivateChat({userChat, setShowAlert}){
-    
+export default function PrivateChat({setShowAlert}){
+
+    const userChat = useChat((state) => state.userChat)
+    const {photoURL, userID, username} = useChat((state) => state.userData);
     const docId = userChat.chatId
-    const photoURL = userChat.UserData.photoURL
-    const userID = userChat.UserData.userID
-    const username = userChat.UserData.username
     const [msgQuery, setMsgQuery] = useState()
+
 
     useMemo(async () => {
         const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
@@ -33,16 +33,9 @@ export default function PrivateChat({userChat, setShowAlert}){
 
     const [messages,_loading,_error,querySnapshot] = useCollectionData(msgQuery)
 
-    // messages && messages.forEach((lastmsg) => {
-    //   const setLastMessage = useStore((state) => state.setLastMessage);
-
-    //   setLastMessage({ chatId: userChat.chatId, text: lastmsg.text });
-
-    // })
-
     const docRef = []
         querySnapshot?.forEach(function(doc){
-        docRef.push(doc.ref)
+        docRef.push(doc.ref) 
         })   
 
     const refBody = useRef('')
@@ -192,7 +185,6 @@ export default function PrivateChat({userChat, setShowAlert}){
         };
         setShowAlert(alert);
       }
-  
   }
 
     return (
@@ -268,7 +260,7 @@ export default function PrivateChat({userChat, setShowAlert}){
                   key={index}
                   message={msg}
                   docRef={docRef[index]}
-                  CurrentUserID={userChat.UserData.userID}
+                  CurrentUserID={userID}
                 />
               ))}
           </main>

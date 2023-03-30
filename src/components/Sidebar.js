@@ -3,20 +3,23 @@ import { MdContactMail } from "react-icons/md";
 import { IoMdAddCircle, IoIosPeople } from "react-icons/io";
 import { db } from '../services/firebaseService'
 import SidebarChatsItem from "./SidebarChatsItem";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import useStore from "../store";
 import { useEffect } from "react";
 
-const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => {
-    
-        const lastMessage = useStore((state) => state.lastMessage);
+import useChat from "../chatState";
 
-        useEffect(() => {
-          console.log(lastMessage);
-        }, [lastMessage]);
+const Sidebar = React.memo(({setShowAlert}) => {
+    const userData = useChat((state) => state.userData);
+    const userChat = useChat((state) => state.userChat)
+    const setUserChat = useChat((state) => state.setUserChat)
 
+    // const lastMessage = useChat((state) => state.privateChat);
+
+    // useEffect(() => {
+    //     console.log(lastMessage);
+    // }, [lastMessage]);
 
     const [idInput, setIdInput] = useState('')
     const [refChat, setRefChat] = useState()
@@ -24,17 +27,16 @@ const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => 
     useMemo(() => {  
         const refChatData = db
         .collection('privateChat')
-        .where('users', 'array-contains', UserData.userID)
-
+        .where('users', 'array-contains', userData.userID)
         setRefChat(refChatData)
-    },[UserData])
+    },[userData])
 
     const [chatsSnapshot] = useCollection(refChat)
     
     const handleCreateChat = async () => {
     const refUsersDB = collection(db, 'usersDB')    
 
-        if(idInput === UserData.userID){
+        if(idInput === userData.userID){
             const alert = {
                 severity:"warning",
                 setOpen:true, 
@@ -66,7 +68,13 @@ const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => 
         }
         else{
             db.collection('privateChat').add({
-            users: [UserData.userID, idInput] })
+            users: [userData.userID, idInput] })
+            .then((promise) => {
+                console.log(promise)
+                updateDoc(doc(db,promise.path),{
+                    docId: promise.id
+                })
+            })
             const alert = {
                 severity:"success",
                 setOpen:true, 
@@ -123,7 +131,7 @@ const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => 
                 </DialogActions>
             </Dialog>
 
-            <div className={`${userChat ? '' : 'active'} color3 flex justify-center border-opacity-30 border-gray-100 border-b items-center md:gap-2 hover:bg-[#a34373] transition cursor-pointer gap-1 p-3`} onClick={() => {setUserChat(null)}}>
+            <div className={`${ Object.keys(userChat).length == 0 && 'active'} color3 flex justify-center border-opacity-30 border-gray-100 border-b items-center md:gap-2 hover:bg-[#a34373] transition cursor-pointer gap-1 p-3`} onClick={() => {setUserChat({})}}>
                 <IoIosPeople className="text-[2.5rem]"/>
                 <span className="text-sm lg:text-base xl:text-lg text-ellipsis overflow-hidden">Chat Geral</span>
             </div>
@@ -141,12 +149,10 @@ const Sidebar = React.memo(({setUserChat, userChat, UserData, setShowAlert}) => 
                 {chatsSnapshot?.docs.map((item, index) => (
                 <div className="h-full w-full" key={index}>
                 <SidebarChatsItem
-                setUserChat={setUserChat} 
                 active={userChat?.chatId === item?.id ? 'active' : ''}
                 id={item.id}
                 users={item.data().users}
-                user={UserData.userID}
-                UserData={UserData}
+                user={userData.userID}
                 />
                 </div>
                 ))

@@ -11,18 +11,15 @@ import ChatHeader from './ChatHeader'
 import SignOut from './SignOut'
 import { ChatRoom } from './ChatRoom'
 import ShowAlert from './ShowAlert'
+import useChat from '../chatState'
 
-export default function Chat({userData}) {
-
+export default function Chat() {
+    const userData = useChat((state) => state.userData)
+    const userChat = useChat((state) => state.userChat);
     const [user] = useAuthState(auth)
-    const [userChat, setUserChat] = useState(null)
     const [showAlert, setShowAlert] = useState()
     const [sidebar, setSidebar] = useState(false)
     const showSidebar = () => setSidebar(!sidebar)
-
-    useEffect(() => {
-      console.log(userChat)
-    },[userChat])
 
     if (window.innerWidth < 640) {
       let vh = window.innerHeight * 0.01;
@@ -60,9 +57,6 @@ export default function Chat({userData}) {
                   return (
                     <Sidebar
                       setShowAlert={setShowAlert}
-                      setUserChat={setUserChat}
-                      userChat={userChat}
-                      UserData={userData}
                     />
                   );
                 } else {
@@ -75,7 +69,7 @@ export default function Chat({userData}) {
             onClick={() => !sidebar && setSidebar(true)}
             className="Chat col-span-full row-span-6 inline-flex flex-col overflow-hidden md:col-span-9"
           >
-            <ChatHeader userChat={userChat} />
+            <ChatHeader />
             {useMemo(() => {
               if (!user) {
                 return <Loading />;
@@ -83,8 +77,6 @@ export default function Chat({userData}) {
                 return (
                   <ChatRoom
                     setShowAlert={setShowAlert}
-                    userData={userData}
-                    userChat={userChat}
                   />
                 );
               }

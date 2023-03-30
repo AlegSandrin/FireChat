@@ -1,12 +1,12 @@
 import { IoIosPeople } from "react-icons/io";
 import { MdPerson } from "react-icons/md";
+import useChat from "../chatState";
 
 
-export default function ChatHeader({userChat}){
-    const username = userChat?.username
-    const photoURL = userChat?.photoURL
-    const userID = userChat?.userID
-    if(userChat){
+export default function ChatHeader(){
+    const {photoURL, username, userID} = useChat((state) => state.userChat )
+    
+    if(userID){
     return (
       <header className="color2 flex w-full items-center gap-2 border-l-[2px] border-gray-700 border-opacity-30 p-3 pl-16 drop-shadow-xl md:p-5">
         {photoURL ? (

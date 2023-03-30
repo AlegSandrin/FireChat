@@ -1,14 +1,18 @@
+import { collection, collectionGroup, getDocs, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
-import { useCollection } from "react-firebase-hooks/firestore"
+import { useCollection, useCollectionData } from "react-firebase-hooks/firestore"
 import { MdPerson } from "react-icons/md"
 import { db } from "../services/firebaseService"
+
+import useChat from "../chatState";
 
 const getUser = (users, userLogged) => 
    users?.filter((user) => user !== userLogged)[0]; 
 
 
-export default function SidebarChatsItem({id, users, user, setUserChat, active, UserData}) {
+export default function SidebarChatsItem({id, users, user, active}) {
     
+    const userData = useChat((state) => state.userData)
     const [DBref, setDBref] = useState()
     const [allUsers, setAllUsers] = useState()
 
@@ -21,20 +25,29 @@ export default function SidebarChatsItem({id, users, user, setUserChat, active, 
     const ref = db.collection('usersDB').where('userID', '==', getUser(users, user))
     setDBref(ref)
     },[allUsers])
+    
+    const [getUserItem, loading] = useCollection(DBref)
+    
+    // const setChatId = useChat((state) => state.setChatId);
 
-    const [getUserItem] = useCollection(DBref)
-
+    // useEffect(() => {
+    //   const docsId = getUserItem?.docs[0].id
+    //   if (!loading) setChatId(docsId)
+    // },[getUserItem])
+    
     const User = getUserItem?.docs?.[0]?.data()
+    const setUserChat = useChat((state) => state.setUserChat);
     
     const handleNewChat = () => {
+        
         const userChat = {
             chatId: id,
             username: User.username,
             photoURL: User.photoURL,
             userID: User.userID,
-            UserData: UserData
+            userData: userData
         }
-
+        
         setUserChat(userChat)
     }
     

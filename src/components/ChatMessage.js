@@ -5,16 +5,14 @@ import { auth } from '../services/firebaseService'
 import { useState, useEffect } from 'react'
 import { FaPlay } from 'react-icons/fa'
 
-import useStore from '../store'
-
 export function ChatMessage(props) {
+
     const docRef = props.docRef
     const CurrentUserID = props.CurrentUserID
     const { text, uid, photoURL, createdAt, username, userID, imageURL, imagePath, videoURL, videoPath, editedAt } = props.message;
     let type = ''
     if(imageURL) type = 'image'
     if(videoURL) type = 'video'
-
 
         const ts_ms = new Date(createdAt * 1000); // timestamp para milisegundos
         var date = new Date(ts_ms); // inicia um novo objeto Date
@@ -135,16 +133,8 @@ export function ChatMessage(props) {
                       `(editado às ${dayEdit}/${monthEdit} ${hoursEdit}:${minutesEdit})`}
                   </span>
                 </span>
-                {userID === CurrentUserID && (
-                  <MessagesMenu
-                    docRef={docRef}
-                    filePath={imagePath || videoPath}
-                    editMessage={text}
-                    fileURL={imageURL || videoURL}
-                    type={type}
-                  />
-                )}
-                {uid === auth.currentUser.uid && (
+
+                {(uid === auth.currentUser.uid || userID === CurrentUserID) && (
                   <MessagesMenu
                     docRef={docRef}
                     filePath={imagePath || videoPath}

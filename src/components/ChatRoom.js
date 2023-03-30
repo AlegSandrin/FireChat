@@ -1,15 +1,17 @@
 import { useMemo } from "react";
+import useChat from "../chatState";
 import PrivateChat from "./PrivateChat";
 import PublicChat from "./PublicChat";
 
-export function ChatRoom({setShowAlert,userData, userChat}) {
+export function ChatRoom({setShowAlert}) {
+    const userChat = useChat((state) => state.userChat)
     return(
         useMemo(() => {
-            if(userChat == null){
-                return <PublicChat setShowAlert={setShowAlert} userData={userData} />
+            if(Object.keys(userChat).length == 0){
+                return <PublicChat setShowAlert={setShowAlert} />
             }
             else{
-                return <PrivateChat setShowAlert={setShowAlert} userChat={userChat}/>
+                return <PrivateChat setShowAlert={setShowAlert}/>
             }
         },[userChat])
     )

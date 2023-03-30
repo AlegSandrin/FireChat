@@ -1,8 +1,10 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { collection, doc, getDoc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { useEffect, useMemo, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import useChat from "./chatState";
 import Chat from "./components/Chat";
 import Loading from "./components/Loading";
 import SignIn from "./pages/SignIn";
@@ -43,9 +45,13 @@ const theme = createTheme({
 function App() {
 
   const [user, loading] = useAuthState(auth)
-  const [userData, setUserData] = useState()
   const [confirmUser, setConfirmUser] = useState('')
-    
+  const [docId, setDocId] = useState()
+
+  const setUserData = useChat((state) => state.setUserData)
+  const {userID} = useChat((state) => state.userData)
+  const setPrivateChat = useChat((state) => state.setPrivateChat)
+  
     useEffect(() => {
       async function verifUser(){
       if(user){
@@ -64,6 +70,46 @@ function App() {
     verifUser()
     },[user])
 
+// useEffect(() => {})
+//     if(userID){
+//     let chats = []
+//     const ref = query(collection(db,'privateChat'), where('users', 'array-contains', userID))
+//     onSnapshot(ref, (querySnapshot) => {
+//       querySnapshot.forEach((doc) => {
+//         const q = query(db.collection('privateChat').doc(doc.data().docId).collection('messages').orderBy('createdAt'))
+//         onSnapshot(q, (chatsSnapshot) => {
+//          chatsSnapshot.forEach((docs) => {
+//             chats.push(docs.data()) }) })});});
+//     setPrivateChat(chats);
+//   }
+
+// useEffect(async () => {
+//   let ids = []
+//   if(userID){
+//   const ref = query(collection(db,'privateChat'), where('users', 'array-contains', userID))
+//   const querySnapshot = await getDocs(ref)
+//   querySnapshot.forEach((doc) => {
+//     ids.push(doc.data().docId)
+//   })
+//   }
+//   setDocId(ids)
+// },[userID])
+
+// const [msgQuery, setMsgQuery] = useState();
+
+// const [messages] = useCollectionData(msgQuery);
+
+// useEffect(() => {
+//   setPrivateChat(messages)
+// },[messages]) 
+
+// useEffect(() => {
+//   if(docId){
+//     const chatsRef = query(db.collection('privateChat').doc(docId[0],docId[1]).collection('messages').orderBy('createdAt'))
+//     setMsgQuery(chatsRef)
+//   }
+// },[docId])
+
   if (loading) return <div className="h-full w-full justify-center absolute"><Loading/></div>
 
   if (!user) return <SignIn/>
@@ -74,7 +120,7 @@ function App() {
     }
     else{
       if(confirmUser === 'chat'){
-        return <Chat userData={userData}/>
+        return <Chat/>
       }
       if(confirmUser === 'confirm'){
         return <SignInConfirm SignInConfirm={true}/>
