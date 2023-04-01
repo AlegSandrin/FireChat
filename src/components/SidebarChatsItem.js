@@ -26,14 +26,7 @@ export default function SidebarChatsItem({id, users, user, active}) {
     setDBref(ref)
     },[allUsers])
     
-    const [getUserItem, loading] = useCollection(DBref)
-    
-    // const setChatId = useChat((state) => state.setChatId);
-
-    // useEffect(() => {
-    //   const docsId = getUserItem?.docs[0].id
-    //   if (!loading) setChatId(docsId)
-    // },[getUserItem])
+    const [getUserItem] = useCollection(DBref)
     
     const User = getUserItem?.docs?.[0]?.data()
     const setUserChat = useChat((state) => state.setUserChat);

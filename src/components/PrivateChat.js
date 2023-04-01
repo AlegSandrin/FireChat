@@ -25,7 +25,6 @@ export default function PrivateChat({setShowAlert}){
     const docId = userChat.chatId
     const [msgQuery, setMsgQuery] = useState()
 
-
     useMemo(async () => {
         const q = query(db.collection('privateChat').doc(docId).collection('messages').orderBy('createdAt'))
         setMsgQuery(q)
@@ -50,6 +49,7 @@ export default function PrivateChat({setShowAlert}){
 
     const sendMessage = async (e) => {
     const messagesRef = firestore.collection('privateChat').doc(docId).collection('messages')
+    const lastMessage = firestore.collection('privateChat').doc(docId)
 
        e.preventDefault(); 
 
@@ -62,6 +62,10 @@ export default function PrivateChat({setShowAlert}){
             userID: userID,
             photoURL: photoURL,
             username: username
+        })
+        await lastMessage.update
+        ({
+          lastMessage: firebase.firestore.FieldValue.serverTimestamp()
         })
         setFormValue('') 
     }
@@ -119,7 +123,8 @@ export default function PrivateChat({setShowAlert}){
                 addFile.videoURL = url;
                 addFile.videoPath = promise.ref.fullPath;
               }
-                firestore.collection('privateChat').doc(docId).collection('messages').add(addFile) 
+                firestore.collection('privateChat').doc(docId).collection('messages').add(addFile)
+                firestore.collection('privateChat').doc(docId).update({ lastMessage: firebase.firestore.FieldValue.serverTimestamp() })
             })
         })
     }  

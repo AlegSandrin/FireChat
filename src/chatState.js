@@ -11,13 +11,13 @@ const useChat = create((set) => ({
 
   privateChat: [],
   setPrivateChat: (privateChat) =>
-    set((state) => ( { privateChat: [privateChat]} ) ),
+    set(() => ( { privateChat: privateChat} ) ),
 
   lastMessage: [],
   setChatId: (chatid) =>
     set((state) => ({ lastMessage: [...state.lastMessage, [chatid]] })),
   setLastMessage: (chatid, message) =>
-    set((state) => (lastMessage[chatid] = message)),
+    set(() => (lastMessage[chatid] = message)),
 }));
 
 export default useChat
