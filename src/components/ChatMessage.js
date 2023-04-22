@@ -134,7 +134,7 @@ export function ChatMessage(props) {
                   </span>
                 </span>
 
-                {(uid === auth.currentUser.uid || userID === CurrentUserID) && (
+                {(uid === auth.currentUser.uid || (userID && userID === CurrentUserID)) && (
                   <MessagesMenu
                     docRef={docRef}
                     filePath={imagePath || videoPath}
@@ -143,6 +143,7 @@ export function ChatMessage(props) {
                     type={type}
                   />
                 )}
+                
               </div>
               {imageURL && (
                 <img

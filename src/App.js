@@ -51,7 +51,10 @@ function App() {
 
   const setUserData = useChat((state) => state.setUserData)
   const {userID} = useChat((state) => state.userData)
+  const privateChat = useChat((state) => state.privateChat);
   const setPrivateChat = useChat((state) => state.setPrivateChat)
+  const [onChange, setOnChange] = useState()
+  const update = onChange;
   
     useEffect(() => {
       async function verifUser(){
@@ -83,27 +86,28 @@ useEffect(async () => {
   setDocId(ids)
 },[userID])
 
-const [messages, setMessages] = useState()
+let querySnap = {}
 
 useEffect(() => {
-  setPrivateChat(messages)
-},[messages]) 
+  setPrivateChat(querySnap)
+},[update])
 
-useEffect(() => {
-  if(docId){
-    let chats = []
-    docId.forEach(async (id) => {
-      let docs = []
-        const snap = await getDocs(db.collection('privateChat').doc(id).collection('messages').orderBy('createdAt'))
-        snap.forEach((doc) => {
-        const data = doc.data()
-        docs.push(data)
-        });
-      chats.push(docs)
+    querySnap = []
+    docId?.forEach(async (id) => {   
+      const snap = await onSnapshot(db.collection('privateChat').doc(id).collection('messages').orderBy('createdAt'), (querySnapshot) => {
+      querySnap[id] = querySnapshot
+      // querySnapshot && setMessages(querySnap)
+      querySnapshot.docChanges().forEach((change) => {
+        setOnChange(change.type)
+      })
+      return () => {
+      snap();
+    }; 
     })
-    setMessages(chats)
-  }
-},[docId])
+    
+}) 
+
+
 
   if (loading) return <div className="h-full w-full justify-center absolute"><Loading/></div>
 

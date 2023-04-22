@@ -33,10 +33,6 @@ const Sidebar = React.memo(({ setShowAlert }) => {
 
   const lastMessage = useChat((state) => state.privateChat);
 
-  useEffect(() => {
-    console.log(lastMessage);
-  }, [lastMessage]);
-
   const [idInput, setIdInput] = useState("");
   const [refChat, setRefChat] = useState();
 
@@ -86,7 +82,6 @@ const Sidebar = React.memo(({ setShowAlert }) => {
             users: [userData.userID, idInput],
           })
           .then((promise) => {
-            console.log(promise);
             updateDoc(doc(db, promise.path), {
               docId: promise.id,
             });

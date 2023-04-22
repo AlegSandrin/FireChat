@@ -9,7 +9,7 @@ const useChat = create((set) => ({
   setUserChat: (userChat) =>
     set(() => ( { userChat: userChat } ) ),
 
-  privateChat: [],
+  privateChat: {},
   setPrivateChat: (privateChat) =>
     set(() => ( { privateChat: privateChat} ) ),
 
